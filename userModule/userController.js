@@ -10,11 +10,9 @@ router.get('/', function(req, res, next) {
   });
 
 router.post("/add/:role",service.add)
-router.get("/show/:name",refreshToken,authentifaction,permission("admin"),service.list)
-router.get("/delete/:name",authentifaction,permission("admin"),service.deleteuser)
+router.get("/show/:name",authentifaction,permission("admin"),service.list,refreshToken)
+router.get("/delete/:name",authentifaction,permission("admin"),service.deleteuser,refreshToken)
 router.post("/login",service.login)
-router.get("/veriftoken",verifytoken)
-router.get("/refresh",refreshToken,authentifaction)
-router.get("/listuser",authentifaction,service.listuser)
-router.post("/updateuser/:id",authentifaction,service.update)
+router.get("/listuser",authentifaction,permission("admin"),service.listuser,refreshToken)
+router.post("/updateuser/:id",authentifaction,service.update,refreshToken)
 module.exports = router;

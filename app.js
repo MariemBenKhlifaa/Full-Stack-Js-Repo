@@ -9,7 +9,9 @@ const cors=require('cors')
 
 
 var app = express();
-app.use(cors({credentials: true, origin: "http://localhost:3000"}));
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(cookieParser());
+app.use(express.json());
 var mongoose=require("mongoose")
 var mongoconfig=require("./config/mongoConfig.json")
 mongoose.connect(
@@ -28,9 +30,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'twig');
 
 app.use(logger('dev'));
-app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
