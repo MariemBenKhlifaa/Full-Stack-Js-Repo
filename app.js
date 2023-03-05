@@ -1,3 +1,4 @@
+var http=require("http")
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -5,6 +6,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./userModule/userController');
+var libraryRouter = require('./LibraryModule/LibraryController')
+var commentaireRouter =require('./LibraryModule/CommentaireController')
 const cors=require('cors')
 
 
@@ -22,6 +25,10 @@ mongoose.connect(
 }).catch(err=>{
 console.log(err);
 })
+var server=http.createServer(app)
+server.listen(3000,()=>{
+    console.log("server strated");
+})
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -35,6 +42,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/library', libraryRouter);
+app.use('/commentaire', commentaireRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
