@@ -62,7 +62,7 @@ async function login(req,res,next){
   
     res.cookie('token', token, {
       path: "/",
-      expires: new Date(Date.now() + 1000 * 30), // 30 seconds
+      expires: new Date(Date.now() + 1000 * 60), // 30 seconds
       httpOnly: true,
       sameSite: "lax",
     });
