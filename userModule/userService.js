@@ -7,7 +7,6 @@ const authentifaction = require("../userModule/middleware/auth")
 var usertodelete;
 async function add(req,res,next){
 
-
    newuser= new user(
     {
         name:req.body.name,
