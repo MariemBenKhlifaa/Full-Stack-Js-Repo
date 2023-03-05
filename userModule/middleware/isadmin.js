@@ -3,7 +3,7 @@ const userModel = require("../userModel");
 const permission =(role)=>{ return async (req,res,next)=>{
 
     try{
-        const header=req.headers.cookie.split("=")[1]
+        const header=req.cookies.token
         console.log(header);
         const decodedtoken = jwt.verify(header,'mykey');
        // const userr=await userModel.findOne({username:decodedtoken.username,role:})
@@ -12,7 +12,7 @@ const permission =(role)=>{ return async (req,res,next)=>{
         }
         else
         {
-            res.status(401).send('vous n avez pas l acces')
+            res.status(401).send('vous n avez pas l acceees')
         }
     }
     catch(e){

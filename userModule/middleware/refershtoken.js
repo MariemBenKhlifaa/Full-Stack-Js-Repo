@@ -1,35 +1,35 @@
 const jwt=require('jsonwebtoken');
 const userModel = require("../userModel");
 const refreshToken = async (req, res, next) => {
-    const header=req.headers.cookie.split("=")[1];
-  if (!header) {
+  //const cookies = req.headers.cookie;
+  const prevToken = req.cookies.token;
+  if (!prevToken) {
     return res.status(400).json({ message: "Couldn't find token" });
   }
-  const decodedtoken = jwt.verify(header,'mykey');
-  console.log(decodedtoken)
-  const userr= await userModel.findOne({username:decodedtoken.username})
-    if (!userr) {
-     
+  jwt.verify(String(prevToken), 'mykey', (err, user) => {
+    if (err) {
+      console.log(err);
       return res.status(403).json({ message: "Authentication failed" });
     }
-    res.clearCookie(`${userr._id}`);
-    req.cookies[`${userr._id}`] = "";
+    res.clearCookie('token');
+    req.cookies['token'] = "";
 
-    const token = jwt.sign({id:userr._id,role:userr.role,username:userr.username}, 'mykey', {
-      expiresIn: "1h",
+    const token = jwt.sign({ id: user._id ,role:user.role,name:user.name,lastname:user.lastname,username:user.username,pwd:user.pwd},'mykey', {
+      expiresIn: "35s",
     });
     console.log("Regenerated Token\n", token);
 
-    res.cookie(String(userr.id), token, {
+    res.cookie('token', token, {
       path: "/",
-      expires:new Date(Date.now() + 60 * 60 * 1000),
+      expires: new Date(Date.now() + 1000 * 30), // 30 seconds
       httpOnly: true,
       sameSite: "lax",
     });
+   // console.log(us)
 
-    req.id = userr._id;
-    next();
-  
+    //req.id = user._id;
+   next();
+  });
 };
   
   module.exports=refreshToken;

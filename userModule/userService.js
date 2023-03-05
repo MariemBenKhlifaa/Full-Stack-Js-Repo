@@ -57,12 +57,10 @@ async function login(req,res,next){
   }
   
 
-    const token = jwt.sign({id:userexisting._id,role:userexisting.role,username:userexisting.username},jwt_secret_key,{expiresIn:"1hr"})
-    if (req.cookies[`${userexisting._id}`]) {
-      req.cookies[`${userexisting._id}`] = "";
-    }
+    const token = jwt.sign({id:userexisting._id,role:userexisting.role,username:userexisting.username,name:userexisting.name,pwd:userexisting.pwd,lastname:userexisting.lastname},jwt_secret_key,{expiresIn:"1hr"})
+   
   
-    res.cookie(String(userexisting._id), token, {
+    res.cookie('token', token, {
       path: "/",
       expires: new Date(Date.now() + 1000 * 30), // 30 seconds
       httpOnly: true,
@@ -128,7 +126,7 @@ async function deleteuser(req,res,next)
     
       
     
-    },{new:true},(obj)=>{console.log(obj)})
+    },{new:true})
     res.end()
  }
 

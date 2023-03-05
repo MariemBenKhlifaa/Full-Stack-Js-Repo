@@ -5,7 +5,7 @@ const authentifaction=async(req,res,next)=>{
     try{
        // const header=req.headers['authorization'].replace('Bearer ', '');
       // console.log(req.headers.cookie.split("=")[1])
-       const header=req.headers.cookie.split("=")[1]
+       const header=req.cookies.token;
        console.log(header)
      //  const header=cook.split("=")[1]
        // console.log(header);
