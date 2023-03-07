@@ -8,6 +8,9 @@ router.put("/updateev/:id",service.updateev)
 router.get("/listev",service.listev)
 //router.get("/listoneev/:id",service.listoneev)
 router.get("/deleteev/:id",service.deleteev)
+router.get("/one/:id",service.listoneev)
+
+
 
 
 
