@@ -66,16 +66,7 @@ async function searchbytitle(req,res,next)
         res.end()
         
       }
-/*
-async function searchbytitle(req, res, next) {
 
- await Events.find({Title :  {'$regex': req.params.Title,$options:'$i'} },(err,docs)=>{
-  console.log(docs)});
- return res.send();
-
-  }*/
-
-      
 async function deleteev(req,res,next)
      {
        
@@ -94,7 +85,13 @@ async function deleteev(req,res,next)
      }    
 
 
-
+async function GetEventCount(req,res, next) {
+  try {
+    const count = await Events.estimatedDocumentCount();
+    return res.json({ count });
+  } catch (error) {
+    return next(error);
+  }}
 
     
-module.exports={addev,updateev,listev,deleteev,listoneev,searchbytitle}
+module.exports={addev,updateev,listev,deleteev,listoneev,searchbytitle,GetEventCount}

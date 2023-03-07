@@ -9,6 +9,8 @@ router.get("/listev",service.listev)
 router.get("/deleteev/:id",service.deleteev)
 router.get("/one/:id",service.listoneev)
 router.get("/search/:Title",service.searchbytitle)
+router.get("/count",service.GetEventCount)
+
 
 
 
