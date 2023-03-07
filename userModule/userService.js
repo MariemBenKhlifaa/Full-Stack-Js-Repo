@@ -3,6 +3,7 @@ var user=require("./userModel")
 const bcrypt=require("bcryptjs")
 const jwt=require('jsonwebtoken')
 const jwt_secret_key="mykey";
+
 const authentifaction = require("../userModule/middleware/auth")
 var usertodelete;
 async function add(req,res,next){
@@ -54,9 +55,10 @@ async function login(req,res,next){
   const comparepwd=bcrypt.compareSync(pwd, userexisting.pwd)
   if(comparepwd==false){
     return res.status(400).json({message:'mot de passe incorrect'})
+    
   }
   
-
+  //await MailService.sendMail(user.emil); //Envoi mail à un utilisateur
     const token = jwt.sign({id:userexisting._id,role:userexisting.role,username:userexisting.username,name:userexisting.name,pwd:userexisting.pwd,lastname:userexisting.lastname},jwt_secret_key,{expiresIn:"1hr"})
    
   
@@ -121,18 +123,12 @@ async function deleteuser(req,res,next)
         name:req.body.name,
         lastname:req.body.lastname,
         pwd:bcrypt.hashSync(req.body.pwd),
-        role:req.body.role
-         
-    
-      
-    
+        role:req.body.role   
     },{new:true})
     res.end()
- }
+ } 
 
- 
-  
- 
 
-module.exports={add,list,deleteuser:deleteuser,login:login,verifytoken:verifytoken,listuser:listuser,update:update}
+
+module.exports={add,list,deleteuser:deleteuser,login:login,verifytoken:verifytoken,listuser:listuser,update:update,}
 
