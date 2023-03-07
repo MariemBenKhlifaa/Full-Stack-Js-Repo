@@ -1,6 +1,5 @@
 var express = require('express');
 var Events = require ("./eventsModel")
-
 async function addev(req,res,next){
 
     newEvents= new Events(
@@ -54,27 +53,29 @@ async function listoneev(req,res,next)
       })
       
         res.end()
+        
       }
+
+//search
+async function searchbytitle(req,res,next)
+  {
+    Events.find({Title :  {'$regex': req.params.Title,$options:'$i'} },(err,docs)=>{
+      console.log(docs)
+      })
       
-    
+        res.end()
+        
+      }
+/*
+async function searchbytitle(req, res, next) {
 
-/*export const getSingleEvent =async (req,res) =>{
-const id=req.params.id;
-try{
-  const event=await Events.findById(id);
-  res.status(200).json({
-    success: true,
-    message:"successfully ",
-    data:event,
-  });
-}catch (err){
-  res.status(404).json({
-    success: false,
-    message:"not found"
-  });
-}
+ await Events.find({Title :  {'$regex': req.params.Title,$options:'$i'} },(err,docs)=>{
+  console.log(docs)});
+ return res.send();
 
-}*/
+  }*/
+
+      
 async function deleteev(req,res,next)
      {
        
@@ -96,4 +97,4 @@ async function deleteev(req,res,next)
 
 
     
-module.exports={addev,updateev,listev,deleteev,listoneev}
+module.exports={addev,updateev,listev,deleteev,listoneev,searchbytitle}
