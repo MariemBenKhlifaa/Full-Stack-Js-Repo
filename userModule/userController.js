@@ -14,6 +14,7 @@ var refreshToken = require("./middleware/refershtoken");
 router.post("/forgotpassword", forgotpassword);
 router.post("/resetpassword/:token", resetpassword);
 router.post("/getpassword/:email", getPassword);
+router.post("/googlelogin",service.googlelogin)
 
 router.get("/", function (req, res, next) {
   res.send("hello user");

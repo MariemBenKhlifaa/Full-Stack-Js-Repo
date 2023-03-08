@@ -78,7 +78,7 @@ const forgotpassword = async (req, res, next) => {
       console.log("aaa", token);
       const url = `${CLIENT_URL}/users/resetpassword/${token}`;
       sendMail(
-        "dorsaf.charfeddine@esprit.tn",
+        "elaa.boulifi@esprit.tn",
         url,
         "Click here to reset your password"
       );
@@ -117,6 +117,9 @@ const resetpassword = async (req, res, next) => {
     return res.status(500).json({ error: err.message });
   }
 };
+
+
+
 
 module.exports = {
   authentifaction,

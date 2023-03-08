@@ -2,6 +2,9 @@ var user = require("./userModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const jwt_secret_key = "mykey";
+const {OAuth2Client} = require('google-auth-library');
+const {CLIENT_URL} = process.env
+const client = new OAuth2Client(process.env.CLIENT_ID)
 const authentifaction = require("../userModule/middleware/auth");
 var usertodelete;
 async function add(req, res, next) {
@@ -124,6 +127,80 @@ async function update(req, res, next) {
   res.end();
 }
 
+async function googlelogin(req, res, next) {
+
+  const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+  
+  try {
+    const { tokenId } = req.body;
+    
+    console.log(tokenId)
+    const verify = await client.verifyIdToken({ idToken: tokenId, audience: process.env.GOOGLE_CLIENT_ID });
+
+    const { email_verified, email, name, picture } = verify.payload;
+    const pwd = email + process.env.GOOGLE_SECRET;
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(pwd, salt);
+
+    if (!email_verified) {
+      return res.status(400).json({ msg: "Email verification failed." });
+    }
+
+    const User = await user.findOne({ email });
+    console.log(User)
+
+    if (User) {
+      let isMatch = await bcrypt.compare(pwd, User.pwd);
+
+      if (!isMatch) {
+        return res.status(404).json({
+          success: false,
+          error: "Password is incorrect"
+        });
+      }
+
+      const token = sendToken({ _id: User._id });
+
+      res.cookie('refreshtoken', token, {
+        httpOnly: true,
+        path: '/api/auth/refresh_token',
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 7days
+      });
+
+      res.status(201).json({
+        success: true,
+        token: token
+      });
+    } else {
+      const newUser = new user({
+        name: req.body.name,
+        lastname: req.body.lastname,
+        username: req.body.username,
+        pwd: bcrypt.hashSync(req.body.pwd),
+        role: req.params.role
+      });
+
+      await newUser.save();
+
+      const token = sendToken({ _id: newUser._id });
+
+      res.cookie('refreshtoken', token, {
+        httpOnly: true,
+        path: '/api/auth/refresh_token',
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 7days
+      });
+
+      res.status(201).json({
+        success: true,
+        token: token
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ msg: err.message });
+  }
+}
+
 module.exports = {
   add,
   list,
@@ -132,4 +209,5 @@ module.exports = {
   verifytoken: verifytoken,
   listuser: listuser,
   update: update,
+  googlelogin:googlelogin,
 };
