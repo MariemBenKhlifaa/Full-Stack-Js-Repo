@@ -77,7 +77,11 @@ const forgotpassword = async (req, res, next) => {
       const token = sendToken({ id: user._id });
       console.log("aaa", token);
       const url = `${CLIENT_URL}/users/resetpassword/${token}`;
-      sendMail("dorsaf.charfeddine@esprit.tn", url, "Rest Your password");
+      sendMail(
+        "dorsaf.charfeddine@esprit.tn",
+        url,
+        "Click here to reset your password"
+      );
       res.status(200).json({
         url: url,
         success: true,
