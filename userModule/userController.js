@@ -1,4 +1,5 @@
 var express = require("express");
+const { verifytoken, listuser } = require("./userService");
 var router = express.Router();
 var service = require("./userService");
 const {
@@ -29,7 +30,7 @@ router.get(
   refreshToken
 );
 router.get(
-  "/delete/:name",
+  "/delete/:id",
   authentifaction,
   permission("admin"),
   service.deleteuser,
@@ -45,6 +46,12 @@ router.get(
 );
 router.post("/updateuser/:id", authentifaction, service.update, refreshToken);
 router.get("/logout", service.logout);
-router.get("/home", service.homePage);
+router.get(
+  "/userconnecte",
+  authentifaction,
+  service.getuserconnecte,
+  refreshToken
+);
+router.get("/refresh", authentifaction, service.refresh, refreshToken);
 
 module.exports = router;

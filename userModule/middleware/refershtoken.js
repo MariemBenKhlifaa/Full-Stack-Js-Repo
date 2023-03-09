@@ -1,4 +1,4 @@
-const jwt=require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 const userModel = require("../userModel");
 const refreshToken = async (req, res, next) => {
   //const cookies = req.headers.cookie;
@@ -6,30 +6,42 @@ const refreshToken = async (req, res, next) => {
   if (!prevToken) {
     return res.status(400).json({ message: "Couldn't find token" });
   }
-  jwt.verify(String(prevToken), 'mykey', (err, user) => {
+  jwt.verify(String(prevToken), "mykey", (err, user) => {
     if (err) {
       console.log(err);
       return res.status(403).json({ message: "Authentication failed" });
     }
-    res.clearCookie('token');
-    req.cookies['token'] = "";
+    res.clearCookie("token");
+    req.cookies["token"] = "";
 
-    const token = jwt.sign({ id: user._id ,role:user.role,name:user.name,lastname:user.lastname,username:user.username,pwd:user.pwd},'mykey', {
-      expiresIn: "35s",
-    });
+    const token = jwt.sign(
+      {
+        id: user._id,
+        role: user.role,
+        name: user.name,
+        lastname: user.lastname,
+        username: user.username,
+        pwd: user.pwd,
+        email: userexisting.email,
+      },
+      "mykey",
+      {
+        expiresIn: "1hr",
+      }
+    );
     console.log("Regenerated Token\n", token);
 
-    res.cookie('token', token, {
+    res.cookie("token", token, {
       path: "/",
-      expires: new Date(Date.now() + 1000 * 30), // 30 seconds
+      expires: new Date(Date.now() + 1000 * 60 * 60), // 30 min
       httpOnly: true,
       sameSite: "lax",
     });
-   // console.log(us)
+    // console.log(us)
 
     //req.id = user._id;
-   next();
+    next();
   });
 };
-  
-  module.exports=refreshToken;
+
+module.exports = refreshToken;

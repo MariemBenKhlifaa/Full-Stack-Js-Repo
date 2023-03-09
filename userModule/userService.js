@@ -5,14 +5,14 @@ const userModel = require("./userModel");
 const jwt_secret_key = "mykey";
 var usertodelete;
 async function add(req, res, next) {
-  const salt = await bcrypt.genSalt(10);
   newuser = new user({
     name: req.body.name,
     lastname: req.body.lastname,
     username: req.body.username,
     email: req.body.email,
-    pwd: bcrypt.hashSync(req.body.pwd, salt),
+    pwd: bcrypt.hashSync(req.body.pwd),
     role: req.params.role,
+    image: req.body.image.substring(req.body.image.lastIndexOf("\\") + 1),
   });
   userexistant = await user.findOne({ username: req.body.username });
 
@@ -81,7 +81,6 @@ async function login(req, res, next) {
     .json({ message: "succefully login", userexisting, token });
 
   // console.log(userexisting)
-  res.end();
 }
 
 const logout = async function (req, res) {
@@ -102,21 +101,29 @@ list = (req, res, next) => {
     } else res.json(docs);
   });
 };
+// async function deleteuser(req, res, next) {
+//   user
+//     .find({ name: req.params.name }, (err, docs) => {
+//       console.log(docs);
+//     })
+//     .deleteOne((err, obj) => {
+//       if (err) {
+//         console.error(err);
+//       } else {
+//         console.log("element supprimeé");
+//       }
+
+//       res.end(obj);
+//     });
+// }
 async function deleteuser(req, res, next) {
   user
-    .find({ name: req.params.name }, (err, docs) => {
+    .findOne({ _id: req.params.id }, (err, docs) => {
       console.log(docs);
     })
-    .deleteOne((err, obj) => {
-      if (err) {
-        console.error(err);
-      } else {
-        console.log("element supprimeé");
-      }
-
-      res.end(obj);
-    });
+    .deleteOne();
 }
+
 async function listuser(req, res, next) {
   user.find((err, obj) => {
     if (err) {
@@ -127,35 +134,51 @@ async function listuser(req, res, next) {
   });
 }
 async function update(req, res, next) {
-  user.findByIdAndUpdate(
+  await user.findByIdAndUpdate(
     req.params.id,
     {
-      username: req.body.username,
       name: req.body.name,
       lastname: req.body.lastname,
-      pwd: bcrypt.hashSync(req.body.pwd),
-      role: req.body.role,
+      image: req.body.image.substring(req.body.image.lastIndexOf("\\") + 1),
+      email: req.body.email,
     },
     { new: true }
   );
+
   res.end();
 }
+async function refresh(req, res, next) {
+  const header = req.cookies.token;
+  const decodedtoken = jwt.verify(header, "mykey");
+  console.log(decodedtoken);
+  const userr = await user.findOne({ username: decodedtoken.username });
 
-const homePage = async function (req, res) {
-  // Check if we have the session set.
-  if (req.session.user) {
-    // Get the user using the session.
-    let user = await userModel.findById(req.session.user);
-    // Render the home page
-    res.render("pages/home", {
-      name: user.name + " " + user.lastname,
-      isLoggedIn: true,
-    });
-  } else {
-    // Redirect to the login page
-    res.redirect("/login");
-  }
-};
+  return res.json(userr);
+}
+async function getuserconnecte(req, res, next) {
+  const header = req.cookies.token;
+  const decodedtoken = jwt.verify(header, "mykey");
+  console.log(decodedtoken);
+  const userr = await user.findOne({ username: decodedtoken.username });
+
+  return res.json(userr);
+}
+
+// const homePage = async function (req, res) {
+//   // Check if we have the session set.
+//   if (req.session.user) {
+//     // Get the user using the session.
+//     let user = await userModel.findById(req.session.user);
+//     // Render the home page
+//     res.render("pages/home", {
+//       name: user.name + " " + user.lastname,
+//       isLoggedIn: true,
+//     });
+//   } else {
+//     // Redirect to the login page
+//     res.redirect("/login");
+//   }
+// };
 
 module.exports = {
   add,
@@ -166,5 +189,6 @@ module.exports = {
   listuser: listuser,
   update: update,
   logout: logout,
-  homePage: homePage,
+  refresh: refresh,
+  getuserconnecte: getuserconnecte,
 };
