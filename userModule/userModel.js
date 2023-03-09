@@ -7,6 +7,7 @@ var User=new Schema({
     email:String,
     username:String,
     pwd:String,
+    image:String,
     role:{
 
         type:String,

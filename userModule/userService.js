@@ -6,18 +6,20 @@ const jwt_secret_key="mykey";
 const authentifaction = require("../userModule/middleware/auth")
 var usertodelete;
 async function add(req,res,next){
-
-
+  
    newuser= new user(
     {
         name:req.body.name,
         lastname:req.body.lastname,
         username:req.body.username,
+        email:req.body.email,
         pwd:bcrypt.hashSync(req.body.pwd),
-        role:req.params.role
+        role:req.params.role,
+        image:req.body.image.substring(req.body.image.lastIndexOf('\\') + 1)
     }
 
    
+
    
 )
 userexistant= await user.findOne({ username: req.body.username})
@@ -34,8 +36,9 @@ res.end()
 
 
 }
-async function login(req,res,next){
+async function login (req,res,next){
   const pwd=req.body.pwd;
+
   try{
   userexisting= await user.findOne({username:req.body.username}),(err,userr)=>{
      if(err){console.error(err)}
@@ -46,7 +49,7 @@ async function login(req,res,next){
     return new Error(err);
   }
   if(userexisting == null){
-    return res.status(400).json({message:'user inexistant'})
+    return res.status(400).json({message:"username inexistant"})
 
 
   }
@@ -56,21 +59,23 @@ async function login(req,res,next){
     return res.status(400).json({message:'mot de passe incorrect'})
   }
   
-
-    const token = jwt.sign({id:userexisting._id,role:userexisting.role,username:userexisting.username,name:userexisting.name,pwd:userexisting.pwd,lastname:userexisting.lastname},jwt_secret_key,{expiresIn:"1hr"})
+ 
+    const token = jwt.sign({id:userexisting._id,role:userexisting.role,username:userexisting.username,name:userexisting.name,pwd:userexisting.pwd,lastname:userexisting.lastname,email:userexisting.email},jwt_secret_key,{expiresIn:"1hr"})
    
   
     res.cookie('token', token, {
       path: "/",
-      expires: new Date(Date.now() + 1000 * 30), // 30 seconds
+      expires: new Date(Date.now() + 1000 * 60 * 60), // 30 seconds
       httpOnly: true,
       sameSite: "lax",
     });
-      
-    
-    return res.status(200).json({message:'succefully de login',userexisting,token})
+     
+   
+     res.status(200).json({message:'succefully de login',userexisting,token});
+     
+
  // console.log(userexisting)
- res.end()
+
   }
 
 async function verifytoken(req,res,next){
@@ -93,16 +98,11 @@ user.find({name:req.params.name},(err, docs) => {
 async function deleteuser(req,res,next)
 {
   
-  user.find({name:req.params.name},(err,docs)=>{
+  user.findOne({_id:req.params.id},(err,docs)=>{
   console.log(docs)
-  }).deleteOne((err,obj)=>{
-    if(err){console.error(err)}
-    else{
-      console.log("element supprimeé")
-    }
+  }).deleteOne()
   
-    res.end(obj)
-  })
+ 
   
   
 }
@@ -115,24 +115,47 @@ async function deleteuser(req,res,next)
  })}
  async function update(req,res,next)
  {
-    user.findByIdAndUpdate(req.params.id,{
+   await user.findByIdAndUpdate(req.params.id,{
       
-        username:req.body.username,
+       
         name:req.body.name,
         lastname:req.body.lastname,
-        pwd:bcrypt.hashSync(req.body.pwd),
-        role:req.body.role
+        image:req.body.image.substring(req.body.image.lastIndexOf('\\') + 1),
+        email:req.body.email,
+       
          
     
       
     
     },{new:true})
+    
     res.end()
+ }
+ async function refresh(req,res,next){
+  const header=req.cookies.token;
+  const decodedtoken = jwt.verify(header,'mykey');
+  console.log(decodedtoken)
+  const userr=await user.findOne({username:decodedtoken.username})
+ 
+  
+    return res.json(userr)
+  
+
+      
+ }
+ async function getuserconnecte(req,res,next){
+  const header=req.cookies.token;
+  const decodedtoken = jwt.verify(header,'mykey');
+  console.log(decodedtoken)
+  const userr=await user.findOne({username:decodedtoken.username})
+ 
+  
+    return res.json(userr)
  }
 
  
   
  
 
-module.exports={add,list,deleteuser:deleteuser,login:login,verifytoken:verifytoken,listuser:listuser,update:update}
+module.exports={add,list,deleteuser:deleteuser,login:login,verifytoken:verifytoken,listuser:listuser,update:update,refresh:refresh,getuserconnecte:getuserconnecte}
 

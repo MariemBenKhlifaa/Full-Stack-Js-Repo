@@ -14,14 +14,14 @@ const refreshToken = async (req, res, next) => {
     res.clearCookie('token');
     req.cookies['token'] = "";
 
-    const token = jwt.sign({ id: user._id ,role:user.role,name:user.name,lastname:user.lastname,username:user.username,pwd:user.pwd},'mykey', {
-      expiresIn: "35s",
+    const token = jwt.sign({ id: user._id ,role:user.role,name:user.name,lastname:user.lastname,username:user.username,pwd:user.pwd,email:userexisting.email},'mykey', {
+      expiresIn: '1hr',
     });
     console.log("Regenerated Token\n", token);
 
     res.cookie('token', token, {
       path: "/",
-      expires: new Date(Date.now() + 1000 * 30), // 30 seconds
+      expires: new Date(Date.now() + 1000 * 60 * 60 ), // 30 min
       httpOnly: true,
       sameSite: "lax",
     });

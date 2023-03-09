@@ -11,8 +11,10 @@ router.get('/', function(req, res, next) {
 
 router.post("/add/:role",service.add)
 router.get("/show/:name",authentifaction,permission("admin"),service.list,refreshToken)
-router.get("/delete/:name",authentifaction,permission("admin"),service.deleteuser,refreshToken)
+router.get("/delete/:id",authentifaction,permission("admin"),service.deleteuser,refreshToken)
 router.post("/login",service.login)
 router.get("/listuser",authentifaction,permission("admin"),service.listuser,refreshToken)
 router.post("/updateuser/:id",authentifaction,service.update,refreshToken)
+router.get("/refresh",authentifaction,service.refresh,refreshToken)
+router.get("/userconnecte",authentifaction,service.getuserconnecte,refreshToken)
 module.exports = router;
