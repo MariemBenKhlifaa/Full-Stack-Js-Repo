@@ -5,12 +5,13 @@ const userModel = require("./userModel");
 const jwt_secret_key = "mykey";
 var usertodelete;
 async function add(req, res, next) {
+  const salt = await bcrypt.genSalt(10);
   newuser = new user({
     name: req.body.name,
     lastname: req.body.lastname,
     username: req.body.username,
     email: req.body.email,
-    pwd: bcrypt.hashSync(req.body.pwd),
+    pwd: bcrypt.hashSync(req.body.pwd, salt),
     role: req.params.role,
   });
   userexistant = await user.findOne({ username: req.body.username });
