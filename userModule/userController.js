@@ -1,5 +1,4 @@
 var express = require("express");
-const { verifytoken, listuser } = require("./userService");
 var router = express.Router();
 var service = require("./userService");
 const {
@@ -7,6 +6,7 @@ const {
   getPassword,
   forgotpassword,
   resetpassword,
+  googlelogin,
 } = require("./middleware/auth");
 var permission = require("./middleware/isadmin");
 var refreshToken = require("./middleware/refershtoken");
@@ -14,7 +14,7 @@ var refreshToken = require("./middleware/refershtoken");
 router.post("/forgotpassword", forgotpassword);
 router.post("/resetpassword/:token", resetpassword);
 router.post("/getpassword/:email", getPassword);
-router.post("/googlelogin",service.googlelogin)
+router.post("/googlelogin", googlelogin);
 
 router.get("/", function (req, res, next) {
   res.send("hello user");
@@ -44,6 +44,7 @@ router.get(
   refreshToken
 );
 router.post("/updateuser/:id", authentifaction, service.update, refreshToken);
-router.post("/mdp");
+router.get("/logout", service.logout);
+router.get("/home", service.homePage);
 
 module.exports = router;

@@ -1,11 +1,8 @@
 var user = require("./userModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const userModel = require("./userModel");
 const jwt_secret_key = "mykey";
-const {OAuth2Client} = require('google-auth-library');
-const {CLIENT_URL} = process.env
-const client = new OAuth2Client(process.env.CLIENT_ID)
-const authentifaction = require("../userModule/middleware/auth");
 var usertodelete;
 async function add(req, res, next) {
   newuser = new user({
@@ -20,12 +17,19 @@ async function add(req, res, next) {
 
   if (userexistant == null) {
     newuser.save();
+    const sessionUser = sessionizeUser(newuser);
+    req.session.user = sessionUser;
+    res.send(sessionUser);
   } else {
     console.log("mawjoud");
   }
   console.log(userexistant);
   res.end();
 }
+const sessionizeUser = (user) => {
+  return { username: user.username };
+};
+
 async function login(req, res, next) {
   const pwd = req.body.pwd;
   try {
@@ -41,12 +45,14 @@ async function login(req, res, next) {
   if (userexisting == null) {
     return res.status(400).json({ message: "user inexistant" });
   }
-  console.log(userexisting.pwd);
+
   const comparepwd = bcrypt.compareSync(pwd, userexisting.pwd);
+
   if (comparepwd == false) {
     return res.status(400).json({ message: "mot de passe incorrect" });
+    // const sessionUser = sessionizeUser(userexisting);
+    // req.session.userexisting = sessionUser;
   }
-
   const token = jwt.sign(
     {
       id: userexisting._id,
@@ -67,13 +73,20 @@ async function login(req, res, next) {
     httpOnly: true,
     sameSite: "lax",
   });
+  req.session.sessionId = userexisting.username;
 
   return res
     .status(200)
-    .json({ message: "succefully de login", userexisting, token });
+    .json({ message: "succefully login", userexisting, token });
+
   // console.log(userexisting)
   res.end();
 }
+
+const logout = async function (req, res) {
+  req.session.destroy();
+  res.end();
+};
 
 async function verifytoken(req, res, next) {
   const header = req.headers["authorization"];
@@ -127,79 +140,21 @@ async function update(req, res, next) {
   res.end();
 }
 
-async function googlelogin(req, res, next) {
-
-  const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-  
-  try {
-    const { tokenId } = req.body;
-    
-    console.log(tokenId)
-    const verify = await client.verifyIdToken({ idToken: tokenId, audience: process.env.GOOGLE_CLIENT_ID });
-
-    const { email_verified, email, name, picture } = verify.payload;
-    const pwd = email + process.env.GOOGLE_SECRET;
-    const salt = await bcrypt.genSalt(10);
-    const passwordHash = await bcrypt.hash(pwd, salt);
-
-    if (!email_verified) {
-      return res.status(400).json({ msg: "Email verification failed." });
-    }
-
-    const User = await user.findOne({ email });
-    console.log(User)
-
-    if (User) {
-      let isMatch = await bcrypt.compare(pwd, User.pwd);
-
-      if (!isMatch) {
-        return res.status(404).json({
-          success: false,
-          error: "Password is incorrect"
-        });
-      }
-
-      const token = sendToken({ _id: User._id });
-
-      res.cookie('refreshtoken', token, {
-        httpOnly: true,
-        path: '/api/auth/refresh_token',
-        maxAge: 7 * 24 * 60 * 60 * 1000 // 7days
-      });
-
-      res.status(201).json({
-        success: true,
-        token: token
-      });
-    } else {
-      const newUser = new user({
-        name: req.body.name,
-        lastname: req.body.lastname,
-        username: req.body.username,
-        pwd: bcrypt.hashSync(req.body.pwd),
-        role: req.params.role
-      });
-
-      await newUser.save();
-
-      const token = sendToken({ _id: newUser._id });
-
-      res.cookie('refreshtoken', token, {
-        httpOnly: true,
-        path: '/api/auth/refresh_token',
-        maxAge: 7 * 24 * 60 * 60 * 1000 // 7days
-      });
-
-      res.status(201).json({
-        success: true,
-        token: token
-      });
-    }
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ msg: err.message });
+const homePage = async function (req, res) {
+  // Check if we have the session set.
+  if (req.session.user) {
+    // Get the user using the session.
+    let user = await userModel.findById(req.session.user);
+    // Render the home page
+    res.render("pages/home", {
+      name: user.name + " " + user.lastname,
+      isLoggedIn: true,
+    });
+  } else {
+    // Redirect to the login page
+    res.redirect("/login");
   }
-}
+};
 
 module.exports = {
   add,
@@ -209,5 +164,6 @@ module.exports = {
   verifytoken: verifytoken,
   listuser: listuser,
   update: update,
-  googlelogin:googlelogin,
+  logout: logout,
+  homePage: homePage,
 };

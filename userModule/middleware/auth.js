@@ -4,31 +4,24 @@ const userModel = require("../userModel");
 const sendMail = require("../../utils/sendEmail");
 const jwt_decode = require("jwt-decode");
 const bcrypt = require("bcryptjs");
-
+const jwt_secret_key = "mykey";
+const { OAuth2Client } = require("google-auth-library");
 const { CLIENT_URL } = process.env;
+const client = new OAuth2Client(process.env.CLIENT_ID);
+var session;
 
 const authentifaction = async (req, res, next) => {
   try {
-    // const header=req.headers['authorization'].replace('Bearer ', '');
-    // console.log(req.headers.cookie.split("=")[1])
     const header = req.cookies.token;
-    console.log(header);
-    //  const header=cook.split("=")[1]
-    // console.log(header);
-
     const decodedtoken = jwt.verify(header, "mykey");
-    console.log(decodedtoken);
     const userr = await userModel.findOne({ username: decodedtoken.username });
-
-    console.log(userr);
-    if (!userr) throw new Error();
-
-    // console.log(header)
+    if (!userr || !req.session.sessionId) throw new Error();
     next();
   } catch (e) {
     res.status(401).send("merci de vous authentifier");
   }
 };
+
 const sendToken = (payload) => {
   return jwt.sign({ payload }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE,
@@ -118,12 +111,85 @@ const resetpassword = async (req, res, next) => {
   }
 };
 
+async function googlelogin(req, res, next) {
+  try {
+    const token = req.headers.authorization;
+    const verify = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.CLIENT_ID,
+    });
 
+    const { email_verified, email, given_name, family_name, name } =
+      verify.payload;
+    const pwd = email + process.env.CLIENT_SECRET;
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(pwd, salt);
+    console.log(verify.payload, "--------------------------");
+    if (!email_verified) {
+      return res.status(400).json({ msg: "Email verification failed." });
+    }
 
+    const User = await userModel.findOne({ email });
+    console.log(User);
+
+    if (User) {
+      let isMatch;
+      if (passwordHash == User.pwd) {
+        isMatch = true;
+      }
+      if (isMatch == false) {
+        res.status(404).json({
+          success: false,
+          error: "password is incorrect",
+        });
+      }
+
+      const token = sendToken({ _id: User._id });
+
+      res.cookie("refreshtoken", token, {
+        httpOnly: true,
+        path: "/api/auth/refresh_token",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7days
+      });
+
+      res.status(201).json({
+        success: true,
+        token: token,
+      });
+    } else {
+      const newUser = new userModel({
+        name: given_name,
+        lastname: family_name,
+        username: name,
+        email: email,
+        pwd: passwordHash,
+      });
+
+      await newUser.save();
+
+      const token = sendToken({ _id: newUser._id });
+
+      res.cookie("refreshtoken", token, {
+        httpOnly: true,
+        path: "/api/auth/refresh_token",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7days
+      });
+
+      res.status(201).json({
+        success: true,
+        token: token,
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ msg: err.message });
+  }
+}
 
 module.exports = {
   authentifaction,
   resetpassword,
   forgotpassword,
   getPassword,
+  googlelogin,
 };

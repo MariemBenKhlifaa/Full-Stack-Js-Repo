@@ -10,8 +10,19 @@ var usersRouter = require("./userModule/userController");
 var libraryRouter = require("./LibraryModule/LibraryController");
 var commentaireRouter = require("./LibraryModule/CommentaireController");
 const cors = require("cors");
+const sessions = require("express-session");
 
 var app = express();
+const oneDay = 1000 * 60 * 60 * 24;
+app.use(
+  sessions({
+    secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
+    saveUninitialized: true,
+    cookie: { maxAge: oneDay },
+    resave: false,
+  })
+);
+
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(cookieParser());
 app.use(express.json());
@@ -38,7 +49,7 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "twig");
 
 app.use(logger("dev"));
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, "public")));
 
