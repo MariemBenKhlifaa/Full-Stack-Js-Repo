@@ -3,33 +3,37 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const userModel = require("./userModel");
 const jwt_secret_key = "mykey";
+const validatorRegister = require("./validation/register")
 var usertodelete;
 async function add(req, res, next) {
+  const { errors, isValid } = validatorRegister(req.body);
+  const imagee=req.body.image
+  if (!isValid) {
+
+   return  res.status(400).json(errors);
+  } else {
   newuser = new user({
+   
     name: req.body.name,
     lastname: req.body.lastname,
     username: req.body.username,
     email: req.body.email,
     pwd: bcrypt.hashSync(req.body.pwd),
     role: req.params.role,
-    image: req.body.image.substring(req.body.image.lastIndexOf("\\") + 1),
+    image: imagee.substring(imagee.lastIndexOf("\\") + 1),
   });
   userexistant = await user.findOne({ username: req.body.username });
 
   if (userexistant == null) {
     newuser.save();
-    const sessionUser = sessionizeUser(newuser);
-    req.session.user = sessionUser;
-    res.send(sessionUser);
+  
   } else {
-    console.log("mawjoud");
+    return res.status(400).json({ message: "user inexistant" });
   }
   console.log(userexistant);
   res.end();
 }
-const sessionizeUser = (user) => {
-  return { username: user.username };
-};
+}
 
 async function login(req, res, next) {
   const pwd = req.body.pwd;
@@ -46,23 +50,42 @@ async function login(req, res, next) {
   if (userexisting == null) {
     return res.status(400).json({ message: "user inexistant" });
   }
-  
 
-    const token = jwt.sign({id:userexisting._id,role:userexisting.role,username:userexisting.username,name:userexisting.name,pwd:userexisting.pwd,lastname:userexisting.lastname},jwt_secret_key,{expiresIn:"1hr"})
-   
-  
-    res.cookie('token', token, {
-      path: "/",
-      expires: new Date(Date.now() + 1000 * 30), // 30 seconds
-      httpOnly: true,
-      sameSite: "lax",
-    });
-      
-    
-    return res.status(200).json({message:'succefully de login',userexisting,token})
- // console.log(userexisting)
- res.end()
+  const comparepwd = bcrypt.compareSync(pwd, userexisting.pwd);
+
+  if (comparepwd == false) {
+    return res.status(400).json({ message: "mot de passe incorrect" });
+    // const sessionUser = sessionizeUser(userexisting);
+    // req.session.userexisting = sessionUser;
   }
+  const token = jwt.sign(
+    {
+      id: userexisting._id,
+      role: userexisting.role,
+      username: userexisting.username,
+      name: userexisting.name,
+      email: userexisting.email,
+      pwd: userexisting.pwd,
+      lastname: userexisting.lastname,
+    },
+    jwt_secret_key,
+    { expiresIn: "1hr" }
+  );
+
+  res.cookie("token", token, {
+    path: "/",
+    expires: new Date(Date.now() + 1000 * 60 * 60 ), // 30 seconds
+    httpOnly: true,
+    sameSite: "lax",
+  });
+  req.session.sessionId = userexisting.username;
+
+  return res
+    .status(200)
+    .json({ message: "succefully login", userexisting, token });
+
+  // console.log(userexisting)
+}
 
 const logout = async function (req, res) {
   req.session.destroy();
