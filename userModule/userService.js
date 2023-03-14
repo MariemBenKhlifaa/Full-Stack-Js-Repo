@@ -3,36 +3,33 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const userModel = require("./userModel");
 const jwt_secret_key = "mykey";
-const validatorRegister = require("./validation/register")
+const validatorRegister = require("./validation/register");
 var usertodelete;
 async function add(req, res, next) {
   const { errors, isValid } = validatorRegister(req.body);
-  const imagee=req.body.image
+  const imagee = req.body.image;
   if (!isValid) {
-
-   return  res.status(400).json(errors);
+    return res.status(400).json(errors);
   } else {
-  newuser = new user({
-   
-    name: req.body.name,
-    lastname: req.body.lastname,
-    username: req.body.username,
-    email: req.body.email,
-    pwd: bcrypt.hashSync(req.body.pwd),
-    role: req.params.role,
-    image: imagee.substring(imagee.lastIndexOf("\\") + 1),
-  });
-  userexistant = await user.findOne({ username: req.body.username });
+    newuser = new user({
+      name: req.body.name,
+      lastname: req.body.lastname,
+      username: req.body.username,
+      email: req.body.email,
+      pwd: bcrypt.hashSync(req.body.pwd),
+      role: req.params.role,
+      image: imagee.substring(imagee.lastIndexOf("\\") + 1),
+    });
+    userexistant = await user.findOne({ username: req.body.username });
 
-  if (userexistant == null) {
-    newuser.save();
-  
-  } else {
-    return res.status(400).json({ message: "user inexistant" });
+    if (userexistant == null) {
+      newuser.save();
+    } else {
+      return res.status(400).json({ message: "user inexistant" });
+    }
+    console.log(userexistant);
+    res.end();
   }
-  console.log(userexistant);
-  res.end();
-}
 }
 
 async function login(req, res, next) {
@@ -74,21 +71,20 @@ async function login(req, res, next) {
 
   res.cookie("token", token, {
     path: "/",
-    expires: new Date(Date.now() + 1000 * 60 * 60 ), // 30 seconds
+    expires: new Date(Date.now() + 1000 * 60 * 60), // 30 seconds
     httpOnly: true,
     sameSite: "lax",
   });
   req.session.sessionId = userexisting.username;
 
-  return res
-    .status(200)
-    .json({ message: "succefully login", userexisting, token });
+  return res.status(200).json({ message: "succefully login", userexisting, token });
 
   // console.log(userexisting)
 }
 
 const logout = async function (req, res) {
   req.session.destroy();
+  res.status(200).clearCookie();
   res.end();
 };
 

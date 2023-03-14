@@ -69,9 +69,9 @@ const forgotpassword = async (req, res, next) => {
     else {
       const token = sendToken({ id: user._id });
       console.log("aaa", token);
-      const url = `${CLIENT_URL}/users/resetpassword/${token}`;
+      const url = `${CLIENT_URL}/resetpassword/${token}`;
       sendMail(
-        "elaa.boulifi@esprit.tn",
+        "dorsaf.charfeddine@esprit.tn",
         url,
         "Click here to reset your password"
       );
@@ -113,7 +113,7 @@ const resetpassword = async (req, res, next) => {
 
 async function googlelogin(req, res, next) {
   try {
-    const token = req.headers.authorization;
+    const { token } = req.body;
     const verify = await client.verifyIdToken({
       idToken: token,
       audience: process.env.CLIENT_ID,
