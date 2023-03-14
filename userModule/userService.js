@@ -12,7 +12,7 @@ async function add(req, res, next) {
     email: req.body.email,
     pwd: bcrypt.hashSync(req.body.pwd),
     role: req.params.role,
-    image: req.body.image.substring(req.body.image.lastIndexOf("\\") + 1),
+    image: req.body.image.substring(req.body.image.lastIndexOf("\\") + 1)
   });
   userexistant = await user.findOne({ username: req.body.username });
 
@@ -115,12 +115,14 @@ async function listuser(req, res, next) {
   });
 }
 async function update(req, res, next) {
+  var image= image.substring(req.body.image.lastIndexOf("\\") + 1);
+
   await user.findByIdAndUpdate(
     req.params.id,
     {
       name: req.body.name,
       lastname: req.body.lastname,
-      image: req.body.image.substring(req.body.image.lastIndexOf("\\") + 1),
+      image: req.body.image,
       email: req.body.email,
     },
     { new: true }

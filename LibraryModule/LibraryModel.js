@@ -6,6 +6,7 @@ var Library=new Schema({
     adresse:String,
     email:String,
     tel:String,
+    img:String
    
 })
 module.exports=mongoose.model("library",Library)
