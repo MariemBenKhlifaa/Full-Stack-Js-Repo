@@ -1,37 +1,38 @@
-var express = require("express");
-const isEmpty = require('./isEmpty')
-const validator = require('validator')
-module.exports = function validatorRegister(data){
-    let errors ={};
-    data.name = !isEmpty(data.name) ? data.name : ""
-    data.lastName = !isEmpty(data.lastName) ? data.lastName : ""
-    data.email = !isEmpty(data.email) ? data.email : ""
-    data.pwd = !isEmpty(data.pwd) ? data.password : ""
-    data.username = !isEmpty(data.username) ? data.username : ""
 
-    if (validator.isEmpty(data.name)){
-        errors.name = "Required firstName";
+const validator = require('validator')
+function validatorRegister(data){
+    let errors = {};
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const regexvide = /^\s*$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+    if (regexvide.test(data.name)) {
+      errors.name = "Required firstName";
     }
-    if (validator.isEmpty(data.lastName)){
-        errors.lastName = "Required lastName";
-    }   
-    if (!validator.isEmail(data.email)){
-        errors.email = "Required format email";
+  
+    if (regexvide.test(data.lastname)) {
+      errors.lastname = "Required lastName";
+    } 
+
+    if(!emailRegex.test(data.email))  
+    {
+        errors.email = "format email invalid";
     }
-    if (validator.isEmpty(data.email)){
-        errors.email = "Required email";
-    }
-    if (validator.isEmpty(data.pwd)){
-        errors.password = "Required password";
-    }
-    if (validator.isEmpty(data.username)){
-        errors.username = "Required username";
-    }
- 
- 
     
-    return{
-        errors,
-        isValid : isEmpty(errors)
+    if (regexvide.test(data.username)) {
+      errors.username = "Required username";
     }
+    
+    if (!passwordRegex.test(data.pwd)) {
+      errors.pwd = "8 caractères minimum, contient au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial";
+    }
+    
+    // Vérifier s'il y a des erreurs
+    const isValid = Object.keys(errors).length === 0;
+  
+    return {
+      errors,
+      isValid,
+    };
 }
+module.exports = validatorRegister

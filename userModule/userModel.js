@@ -8,10 +8,12 @@ var User = new Schema({
   username: String,
   pwd: String,
   image: String,
+  
   role: {
     type: String,
     default: "user",
     enum: ["admin", "superadmin", "user"],
   },
+  isBlocked: { type: Object, default: { blocked: false } }
 });
 module.exports = mongoose.model("user", User);
