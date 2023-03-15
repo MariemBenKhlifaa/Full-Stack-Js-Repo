@@ -224,6 +224,34 @@ async function blockuser(req,res,next){
   }
  
 }
+async function changerpwd(req,res,next){
+  
+  const pwd = req.body.pwd;
+  try {
+    userexisting = await user.findOne({ username: req.params.username })
+     
+    const comparepwd = bcrypt.compareSync(pwd, userexisting.pwd);
+
+    if (comparepwd == false) {
+      return res.status(400).json({ message: "mot de passe incorrect" });
+      // const sessionUser = sessionizeUser(userexisting);
+      // req.session.userexisting = sessionUser;
+    }
+    else {
+      userexisting.pwd=bcrypt.hashSync(req.body.pwdd)
+
+      userexisting.save();
+      
+    console.log("hhhhh")
+    
+    }
+   
+
+}
+catch (err) {
+  return new Error(err);
+}
+}
 
 
 // const homePage = async function (req, res) {
@@ -253,5 +281,6 @@ module.exports = {
   logout: logout,
   refresh: refresh,
   getuserconnecte: getuserconnecte,
-  blockuser:blockuser
+  blockuser:blockuser,
+  changerpwd:changerpwd
 };
