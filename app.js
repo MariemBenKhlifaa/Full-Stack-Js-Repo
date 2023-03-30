@@ -9,6 +9,8 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./userModule/userController");
 var libraryRouter = require("./LibraryModule/LibraryController");
 var commentaireRouter = require("./LibraryModule/CommentaireController");
+var abonnementRouter = require("./LibraryModule/AbbController");
+
 const cors = require("cors");
 const sessions = require("express-session");
 
@@ -57,6 +59,7 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/library", libraryRouter);
 app.use("/commentaire", commentaireRouter);
+app.use("/abonnement", abonnementRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

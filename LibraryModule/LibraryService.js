@@ -65,37 +65,14 @@ async function addL(req,res,next){
    
    
 async function deleteL(req, res, next) {
-    const id = req.params.id;
-  
-    if (!id) {
-      return res.status(400).send('Invalid ID parameter');
-    }
-  
-    let session;
-    try {
-      session = await Library.startSession();
-      session.startTransaction();
-  
-      const doc = await Library.findById(id).session(session);
-      if (!doc) {
-        return res.status(404).send('Document not found');
-      }
-  
-      await Library.deleteOne({ _id: id }).session(session);
-      await session.commitTransaction();
-  
-      res.send('Document deleted successfully');
-    } catch (error) {
-      console.error(error);
-      if (session) {
-        await session.abortTransaction();
-      }
-      return res.status(500).send('Error deleting document');
-    } finally {
-      if (session) {
-        session.endSession();
-      }
-    }
+  const id = req.params.id;
+  try {
+    await Library.deleteOne({ _id: id }); // delete the comment with the given ID
+    res.sendStatus(204); // send a "no content" response if the comment was successfully deleted
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500); // send a "server error" response if there was a problem deleting the comment
+  }
   }
 
     module.exports={addL,updateL,listL,deleteL,getOneL}

@@ -36,7 +36,18 @@ async function addC(req,res,next){
      })}
 
 
-     
+     async function deletec(req, res, next) {
+    
+    
+        const id = req.params.id;
+  try {
+    await Commentaire.deleteOne({ _id: id }); // delete the comment with the given ID
+    res.sendStatus(204); // send a "no content" response if the comment was successfully deleted
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500); // send a "server error" response if there was a problem deleting the comment
+  }
+}
 
     
-    module.exports={addC,updateC,listC}
+    module.exports={addC,updateC,listC,deletec}
