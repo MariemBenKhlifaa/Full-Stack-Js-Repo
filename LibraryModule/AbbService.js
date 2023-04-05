@@ -11,6 +11,7 @@ async function addA(req,res,next){
         city:req.body.city,
         tel:req.body.tel,
         email:req.body.email,
+        Duration:req.body.Duration,
         image:req.body.image.substring(req.body.image.lastIndexOf("\\") + 1),
 
         library_id:req.body.library_id
@@ -31,7 +32,7 @@ async function addA(req,res,next){
         city:req.body.city,
         tel:req.body.tel,
         email:req.body.email,
-        image:req.body.image.substring(req.body.image.lastIndexOf("\\") + 1),
+        Duration:req.body.Duration,
     
     },{new:true},(obj)=>{console.log(obj)})
     res.end()
@@ -54,6 +55,14 @@ async function addA(req,res,next){
       }
       
     
-
+      async function getOneA(req,res,next)
+      {
+       Abonnement.findById((req.params.id),(err,obj)=>{
+        if(err){console.error(err);}
+        console.log(obj)
+        res.json(obj)
+       })}
+      
+       
     
-    module.exports={addA,updateA,listA,deleteA}
+    module.exports={addA,updateA,listA,deleteA,getOneA}

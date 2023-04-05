@@ -6,6 +6,7 @@ async function addL(req,res,next){
      {
         name:req.body.name,
         adresse:req.body.adresse,
+        pays:req.body.pays,
         email:req.body.email,
         tel:req.body.tel,
         img:req.body.img.substring(req.body.img.lastIndexOf("\\") + 1)
@@ -24,6 +25,7 @@ async function addL(req,res,next){
       
         name:req.body.name,
         adresse:req.body.adresse,
+        pays:req.body.pays,
         email:req.body.email,
         tel:req.body.tel,
         img:req.body.img.substring(req.body.img.lastIndexOf("\\") + 1)

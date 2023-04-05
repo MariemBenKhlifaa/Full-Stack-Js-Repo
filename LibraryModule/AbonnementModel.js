@@ -10,7 +10,7 @@ var Abonnement=new Schema({
     city: { type: String, required: true },
     email: { type: String, required: true },
     image:String,
-
+    Duration:String,
       library_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Library",

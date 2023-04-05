@@ -1,11 +1,14 @@
 var express = require('express');
 var Commentaire = require ("./CommentaireModel")
-
+var Library  =require("./LibraryModel")
 async function addC(req,res,next){
+ 
 
     newCommentaire= new Commentaire(
      {
-        description:req.body.description
+
+        description:req.body.description,
+        dateEnvoi :Date.now()
       
     }).save((err,data)=>{
         if(err){
