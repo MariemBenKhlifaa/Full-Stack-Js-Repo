@@ -9,10 +9,15 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./userModule/userController");
 var libraryRouter = require("./LibraryModule/LibraryController");
 var commentaireRouter = require("./LibraryModule/CommentaireController");
+var courseRouter = require("./CourseModule/CourseController");
+var lessonRouter = require("./CourseModule/LessonController");
+var fileUploadRouter = require("./routes/fileUploadRoute");
+
 const cors = require("cors");
 const sessions = require("express-session");
 
 var app = express();
+app.use("/upload", fileUploadRouter);
 const oneDay = 1000 * 60 * 60 * 24;
 app.use(
   sessions({
@@ -56,6 +61,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/library", libraryRouter);
+app.use("/course", courseRouter);
+app.use("/lesson", lessonRouter);
 app.use("/commentaire", commentaireRouter);
 
 // catch 404 and forward to error handler
