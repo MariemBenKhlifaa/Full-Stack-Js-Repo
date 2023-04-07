@@ -1,7 +1,13 @@
 var express = require('express');
 var Library = require ("./LibraryModel")
-async function addL(req,res,next){
+const validatorRegister = require("./validation/ValidLib");
 
+async function addL(req,res,next){
+    const { errors, isValid } = validatorRegister(req.body);
+
+    console.log(req.body)
+    console.log(isValid)
+    if(isValid==true){
     newLibrary= new Library(
      {
         name:req.body.name,
@@ -16,6 +22,10 @@ async function addL(req,res,next){
         console.log(data)
         res.json(data)}
     })
+  }  else{
+        console.log(errors)
+        return res.status(403).json(errors);
+      }
     }
     async function updateL(req,res,next)
  {

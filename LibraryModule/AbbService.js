@@ -1,10 +1,17 @@
 var express = require('express');
 var Abonnement = require ("./AbonnementModel")
 var Library=require('./LibraryModel')
+const validatorRegister = require("./validation/ControleSaisie");
 
 async function addA(req,res,next){
+    const { errors, isValid } = validatorRegister(req.body);
 
+    console.log(req.body)
+    console.log(isValid)
+    if(isValid==true){
+  
    let newAbonnement
+    
    try{
     const data = new Abonnement(
      {
@@ -23,13 +30,23 @@ async function addA(req,res,next){
     library.abonnements.push(newAbonnement._id);
    library.save();
     res.json(data);
-} catch (e) {
+   
+} 
+catch (e) {
     res.status(500).json(e);
     if (newAbonnement) {
         newAbonnement.delete();
     }
   }
-}
+}else{
+    console.log(errors)
+    return res.status(403).json(errors);
+  }
+ 
+
+   }
+  
+
 
     
     async function updateA(req,res,next)
