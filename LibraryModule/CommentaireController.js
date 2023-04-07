@@ -5,7 +5,7 @@ var service=require("./CommentaireService");
 
 router.post("/addc",service.addC)
 router.put("/updatec/:id",service.updateC)
-router.get("/listc",service.listC)
+router.get("/listc/:Libraryid",service.listC)
 router.delete("/deleteC/:id",service.deletec)
 
 

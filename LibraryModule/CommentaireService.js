@@ -46,14 +46,15 @@ async function addC(req,res,next){
 
     
 
-    async function listC(req,res,next)
-    {
-     Commentaire.find((err,obj)=>{
-      if(err){console.error(err);}
-      console.log(obj)
-      res.json(obj)
-     })}
-
+    async function listC(req,res,next){
+    try {
+      const library = await Library.findById(req.params.Libraryid);
+      const commentaires = await Commentaire.find({ _id: library.commentaires });
+      res.json(commentaires);
+    } catch (e) {
+      res.status(500).json(e);
+    }
+    }
 
      async function deletec(req, res, next) {
     
