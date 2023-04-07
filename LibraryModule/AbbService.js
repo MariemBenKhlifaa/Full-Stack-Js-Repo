@@ -1,9 +1,12 @@
 var express = require('express');
 var Abonnement = require ("./AbonnementModel")
+var Library=require('./LibraryModel')
 
 async function addA(req,res,next){
 
-    newAbonnement= new Abonnement(
+   let newAbonnement
+   try{
+    const data = new Abonnement(
      {
         nom:req.body.nom,
         prenom:req.body.prenom,
@@ -13,15 +16,22 @@ async function addA(req,res,next){
         email:req.body.email,
         Duration:req.body.Duration,
         image:req.body.image.substring(req.body.image.lastIndexOf("\\") + 1),
-
-        library_id:req.body.library_id
-    }).save((err,data)=>{
-        if(err){
-            res.status(500).json(err)}else{
-        console.log(data)
-        res.json(data)}
-    })
+        Libraryid:req.body.Libraryid
+    });
+    newAbonnement = await data.save();
+    const library = await Library.findById(req.body.Libraryid);
+    library.abonnements.push(newAbonnement._id);
+   library.save();
+    res.json(data);
+} catch (e) {
+    res.status(500).json(e);
+    if (newAbonnement) {
+        newAbonnement.delete();
     }
+  }
+}
+
+    
     async function updateA(req,res,next)
  {
     Abonnement.findByIdAndUpdate(req.params.id,{

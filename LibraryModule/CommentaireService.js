@@ -1,22 +1,38 @@
 var express = require('express');
 var Commentaire = require ("./CommentaireModel")
 var Library  =require("./LibraryModel")
+
 async function addC(req,res,next){
  
 
-    newCommentaire= new Commentaire(
+    let newCommentaire;
+    try{
+      const data = Commentaire(
      {
 
         description:req.body.description,
-        dateEnvoi :Date.now()
+        dateEnvoi :Date.now(),
+        Libraryid:req.body.Libraryid
+
       
-    }).save((err,data)=>{
-        if(err){
-            res.status(500).json(err)}else{
-        console.log(data)
-        res.json(data)}
-    })
+    });    
+    newCommentaire = await data.save();
+    const library = await Library.findById(req.body.Libraryid);
+    if (library) {
+      library.commentaires.push(newCommentaire._id);
+      const newLibrary = await library.save();
+      res.json(data);
+    } else {
+      res.status(404).send("Library not found");
     }
+  } catch (e) {
+    res.status(500).json(e);
+    console.log(e);
+    if (newCommentaire) {
+      newCommentaire.delete();
+    }
+  }
+}
     async function updateC(req,res,next)
  {
     Commentaire.findByIdAndUpdate(req.params.id,{
