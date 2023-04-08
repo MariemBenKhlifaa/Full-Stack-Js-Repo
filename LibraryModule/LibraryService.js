@@ -29,24 +29,32 @@ async function addL(req,res,next){
     }
     async function updateL(req,res,next)
  {
-  
+    const { errors, isValid } = validatorRegister(req.body);
+
+    console.log(req.body)
+    console.log(isValid)
+    if(isValid==true){
 
     Library.findByIdAndUpdate(req.params.id,{
-      
+       
         name:req.body.name,
         adresse:req.body.adresse,
         pays:req.body.pays,
         email:req.body.email,
         tel:req.body.tel,
-        img:req.body.img.substring(req.body.img.lastIndexOf("\\") + 1)
+        img:req.body.img
 
-         
-    
-      
     
     },{new:true},(obj)=>{console.log(obj)})
-    res.end()
- }
+    res.end();
+ } 
+ else{
+    console.log(errors)
+    return res.status(403).json(errors);
+  }  
+ 
+}
+
 
     
 

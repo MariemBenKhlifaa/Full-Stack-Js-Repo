@@ -5,7 +5,7 @@ const User = require("../userModule/userModel");
 var Abonnement=new Schema({
     nom:String,
     prenom: String,
-    age:String,
+    age:Number,
     tel: String,
     city: String,
     email:String,

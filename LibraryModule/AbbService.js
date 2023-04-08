@@ -51,6 +51,13 @@ catch (e) {
     
     async function updateA(req,res,next)
  {
+    
+    const { errors, isValid } = validatorRegister(req.body);
+
+    console.log(req.body)
+    console.log(isValid)
+    if(isValid==true){
+  
     Abonnement.findByIdAndUpdate(req.params.id,{
       
         nom:req.body.nom,
@@ -60,10 +67,20 @@ catch (e) {
         tel:req.body.tel,
         email:req.body.email,
         Duration:req.body.Duration,
+        image:req.body.image.substring(req.body.image.lastIndexOf("\\") + 1),
+        Libraryid:req.body.Libraryid
+
     
     },{new:true},(obj)=>{console.log(obj)})
     res.end()
- }
+ }else{
+    console.log(errors)
+    return res.status(403).json(errors);
+  }
+ 
+
+   }
+  
 
     
 

@@ -5,7 +5,7 @@ function ValidLib(data){
     let errors = {};
     const regexvide = /^\s*$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const telRegex = /^((\+)33|0)[1-9](\d{2}){4}$/;
+    const telRegex = /^(20|52|21|22|23|24|25|27|71)\d{6}$/;
 
     if (!validator.isLength(data.name, { min: 3, max: 50 })) {
         errors.name = 'Le champ nom doit contenir entre 3 et 10 caractères';
