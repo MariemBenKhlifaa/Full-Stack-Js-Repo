@@ -2,6 +2,7 @@ var express = require('express');
 var Abonnement = require ("./AbonnementModel")
 var Library=require('./LibraryModel')
 const validatorRegister = require("./validation/ControleSaisie");
+const validatorRegistere = require("./validation/UpAge");
 
 async function addA(req,res,next){
     const { errors, isValid } = validatorRegister(req.body);
@@ -52,7 +53,7 @@ catch (e) {
     async function updateA(req,res,next)
  {
     
-    const { errors, isValid } = validatorRegister(req.body);
+    const { errors, isValid } = validatorRegistere(req.body);
 
     console.log(req.body)
     console.log(isValid)
@@ -62,12 +63,10 @@ catch (e) {
       
         nom:req.body.nom,
         prenom:req.body.prenom,
-        age:req.body.age,
         city:req.body.city,
         tel:req.body.tel,
         email:req.body.email,
         Duration:req.body.Duration,
-        image:req.body.image.substring(req.body.image.lastIndexOf("\\") + 1),
         Libraryid:req.body.Libraryid
 
     
