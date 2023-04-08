@@ -8,7 +8,7 @@ function ControleSaisie(data){
     const telRegex = /^(20|52|21|22|23|24|25|27|71)\d{6}$/;
 
 
-
+  
     if (!validator.isLength(data.nom, { min: 3, max: 50 })) {
         errors.nom = 'Le champ nom doit contenir entre 3 et 10 caractères';
       }

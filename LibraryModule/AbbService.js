@@ -90,12 +90,27 @@ catch (e) {
       console.log(obj)
       res.json(obj)
      })}
+
+
+
      async function deleteA(req, res, next) {
-        Abonnement.findOne({ _id: req.params.id }, (err, docs) => {
-            console.log(docs);
-          })
-          .deleteOne();
+         try {
+        const abonnement = await Abonnement.findById(req.params.id);
+        const library = await Library.findByIdAndUpdate(abonnement.Libraryid, {
+          $pull: {
+            abonnements: {
+              _id: abonnement._id,
+            },
+          },
+        });
+        await abonnement.remove();
+        // course.lessons.splice(course.lessons.findIndex(a => a._id === lesson._id) , 1)
+        res.status(200).json("abonnement deleted");
+      } catch (error) {
+        res.json(error);
       }
+    };
+
       
     
       async function getOneA(req,res,next)
