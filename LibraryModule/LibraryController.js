@@ -8,6 +8,7 @@ router.put("/updatel/:id",service.updateL)
 router.get("/listL",service.listL)
 router.delete("/deleteL/:id",service.deleteL)
 router.get("/getOneL/:id",service.getOneL)
+router.get("/getbynom/:name",service.getbynom)
 
 
 module.exports = router;

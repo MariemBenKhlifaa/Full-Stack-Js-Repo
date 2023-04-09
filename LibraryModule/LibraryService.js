@@ -1,7 +1,7 @@
 var express = require('express');
 var Library = require ("./LibraryModel")
 const validatorRegister = require("./validation/ValidLib");
-
+const Updateregistre= require("./validation/Updateregistre");
 async function addL(req,res,next){
     const { errors, isValid } = validatorRegister(req.body);
 
@@ -29,7 +29,7 @@ async function addL(req,res,next){
     }
     async function updateL(req,res,next)
  {
-    const { errors, isValid } = validatorRegister(req.body);
+    const { errors, isValid } = Updateregistre(req.body);
 
     console.log(req.body)
     console.log(isValid)
@@ -81,9 +81,18 @@ async function addL(req,res,next){
     console.log(obj)
     res.json(obj)
    })}
-  
    
+   async function getbynom(req, res, next) {
+    try {
+      const obj = await Library.find({ name: { $regex :req.params.name, $options: "i"}});
+      res.json(obj);
+    } catch (err) {
+      console.error(err);
+      next(err);
+    }
+  }
    
+
 async function deleteL(req, res, next) {
   const id = req.params.id;
   try {
@@ -95,4 +104,4 @@ async function deleteL(req, res, next) {
   }
   }
 
-    module.exports={addL,updateL,listL,deleteL,getOneL}
+    module.exports={addL,updateL,listL,deleteL,getOneL,getbynom}

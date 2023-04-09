@@ -3,6 +3,7 @@ var Abonnement = require ("./AbonnementModel")
 var Library=require('./LibraryModel')
 const validatorRegister = require("./validation/ControleSaisie");
 const validatorRegistere = require("./validation/UpAge");
+const UpAbo = require("./validation/UpAbo");
 
 async function addA(req,res,next){
     const { errors, isValid } = validatorRegister(req.body);
@@ -53,7 +54,7 @@ catch (e) {
     async function updateA(req,res,next)
  {
     
-    const { errors, isValid } = validatorRegistere(req.body);
+    const { errors, isValid } = UpAbo(req.body);
 
     console.log(req.body)
     console.log(isValid)

@@ -104,6 +104,14 @@ async function addC(req, res, next) {
       }
     };
 
+    async function listc(req,res,next)
+    {
+     Commentaire.find((err,obj)=>{
+      if(err){console.error(err);}
+      console.log(obj)
+      res.json(obj)
+     })}
+
 
     
-    module.exports={addC,updateC,listC,deletec}
+    module.exports={addC,updateC,listC,deletec,listc}
