@@ -5,7 +5,7 @@ function ControleSaisie(data){
     let errors = {};
     const regexvide = /^\s*$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const telRegex = /^(20|52|21|22|23|24|25|27|71)\d{6}$/;
+    const telRegex = /^(20|52|95|21|22|23|24|25|27|71)\d{6}$/;
 
 
   
@@ -32,6 +32,9 @@ function ControleSaisie(data){
   
     if (!validator.isInt(data.age, { min: 18 })) {
         errors.age = 'Vous devez être majeur pour soumettre ce formulaire';
+      }
+      if (!validator.isInt(data.age, { max: 65 })) {
+        errors.age = 'désolé vous devez etre moins de 65 ans';
       }
   
       if (regexvide.test(data.age)) {

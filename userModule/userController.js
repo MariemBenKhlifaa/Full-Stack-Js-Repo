@@ -25,5 +25,8 @@ router.post("/updateuser/:id", authentifaction, service.update, refreshToken);
 router.get("/logout", service.logout);
 router.get("/userconnecte", authentifaction, service.getuserconnecte, refreshToken);
 router.get("/refresh", authentifaction, service.refresh, refreshToken);
+router.get("/blockuser/:id", authentifaction, permission("admin"), service.blockuser, refreshToken);
+router.post("/changerpwd/:username",authentifaction, service.changerpwd, refreshToken)
+
 
 module.exports = router;

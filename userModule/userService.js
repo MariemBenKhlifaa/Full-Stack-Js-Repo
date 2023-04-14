@@ -4,14 +4,18 @@ const jwt = require("jsonwebtoken");
 const userModel = require("./userModel");
 const jwt_secret_key = "mykey";
 const validatorRegister = require("./validation/register");
+const crypto = require('crypto');
 var usertodelete;
 async function add(req, res, next) {
   const { errors, isValid } = validatorRegister(req.body);
+
+  console.log(req.body)
   const imagee = req.body.image;
-  if (!isValid) {
-    return res.status(400).json(errors);
-  } else {
-    newuser = new user({
+  console.log(isValid)
+  if(isValid==true){
+    
+   
+    const newuser = new user({
       name: req.body.name,
       lastname: req.body.lastname,
       username: req.body.username,
@@ -20,19 +24,45 @@ async function add(req, res, next) {
       role: req.params.role,
       image: imagee.substring(imagee.lastIndexOf("\\") + 1),
     });
-    userexistant = await user.findOne({ username: req.body.username });
 
-    if (userexistant == null) {
-      newuser.save();
-    } else {
-      return res.status(400).json({ message: "user inexistant" });
+  
+    user.findOne({ username: req.body.username })
+      .then((userexistant) => {
+       
+        if (userexistant == null ) {
+         
+          newuser.save()
+            .then(() => {
+              console.log(newuser);
+              res.end();
+            })
+            .catch((error) => {
+              
+              console.log(error);
+              res.status(500).json({ message: "Erreur lors de l'enregistrement de l'utilisateur" });
+            });
+        } else {
+         return res.status(500).json({ message: "user existe deja" });
+          
+          
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        res.status(500).json({ message: "Erreur lors de la recherche de l'utilisateur" });
+      });
     }
-    console.log(userexistant);
-    res.end();
-  }
+    else{
+      console.log(errors)
+      return res.status(403).json(errors);
+    }
+   
+  
 }
 
 async function login(req, res, next) {
+  const currentTime = new Date();
+
   const pwd = req.body.pwd;
   try {
     (userexisting = await user.findOne({ username: req.body.username })),
@@ -41,11 +71,21 @@ async function login(req, res, next) {
           console.error(err);
         }
       };
+
   } catch (err) {
     return new Error(err);
   }
   if (userexisting == null) {
     return res.status(400).json({ message: "user inexistant" });
+  }
+  if (userexisting.isBlocked.blocked && userexisting.isBlocked.blockEnd > currentTime) {
+      return res.status(400).json({ message: "vous etes bloqué pour une durée de 30min " });
+  }
+
+  if (userexisting.isBlocked.blocked && userexisting.isBlocked.blockEnd < currentTime) {
+    userexisting.isBlocked={ blocked: false, blockEnd: new Date(Date.now()) };
+    await userexisting.save()
+    return res.status(200).json({ message: "user debloqué " });
   }
 
   const comparepwd = bcrypt.compareSync(pwd, userexisting.pwd);
@@ -163,6 +203,56 @@ async function getuserconnecte(req, res, next) {
 
   return res.json(userr);
 }
+async function blockuser(req,res,next){
+  const userId = req.params.id;
+  const blockDuration = 3; // block for 30 minutes
+  
+  try {
+    const userr = await user.findById(userId);
+    
+    if (!userr) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    userr.isBlocked = { blocked: true, blockEnd: new Date(Date.now() + blockDuration * 60000) };
+    await userr.save()
+    
+    return res.json({ message: 'User blocked' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+ 
+}
+async function changerpwd(req,res,next){
+  
+  const pwd = req.body.pwd;
+  try {
+    userexisting = await user.findOne({ username: req.params.username })
+     
+    const comparepwd = bcrypt.compareSync(pwd, userexisting.pwd);
+
+    if (comparepwd == false) {
+      return res.status(400).json({ message: "mot de passe incorrect" });
+      // const sessionUser = sessionizeUser(userexisting);
+      // req.session.userexisting = sessionUser;
+    }
+    else {
+      userexisting.pwd=bcrypt.hashSync(req.body.pwdd)
+
+      userexisting.save();
+      
+    console.log("hhhhh")
+    
+    }
+   
+
+}
+catch (err) {
+  return new Error(err);
+}
+}
+
 
 // const homePage = async function (req, res) {
 //   // Check if we have the session set.
@@ -191,4 +281,6 @@ module.exports = {
   logout: logout,
   refresh: refresh,
   getuserconnecte: getuserconnecte,
+  blockuser:blockuser,
+  changerpwd:changerpwd
 };

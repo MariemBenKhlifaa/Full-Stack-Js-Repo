@@ -76,12 +76,16 @@ async function addL(req,res,next){
   }
   async function getOneL(req,res,next)
   {
-   Library.findById((req.params.id),(err,obj)=>{
-    if(err){console.error(err);}
+    try {
+      const obj = await  Library.findById(req.params.id)
     console.log(obj)
     res.json(obj)
-   })}
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }}
    
+     
    async function getbynom(req, res, next) {
     try {
       const obj = await Library.find({ name: { $regex :req.params.name, $options: "i"}});

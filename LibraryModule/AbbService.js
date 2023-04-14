@@ -53,12 +53,12 @@ catch (e) {
     
     async function updateA(req,res,next)
  {
-    
-    const { errors, isValid } = UpAbo(req.body);
+  const { errors, isValid } = UpAbo(req.body);
 
-    console.log(req.body)
-    console.log(isValid)
-    if(isValid==true){
+  console.log(req.body)
+  console.log(isValid)
+  if(isValid==true){
+    
   
     Abonnement.findByIdAndUpdate(req.params.id,{
       
@@ -67,19 +67,17 @@ catch (e) {
         city:req.body.city,
         tel:req.body.tel,
         email:req.body.email,
-        Duration:req.body.Duration,
-        Libraryid:req.body.Libraryid
+        Duration:req.body.Duration
 
-    
-    },{new:true},(obj)=>{console.log(obj)})
-    res.end()
- }else{
-    console.log(errors)
-    return res.status(403).json(errors);
+      },{new:true},(obj)=>{console.log(obj)})
+      res.end();
+   } 
+   else{
+      console.log(errors)
+      return res.status(403).json(errors);
+    }  
+   
   }
- 
-
-   }
   
 
     
@@ -113,15 +111,16 @@ catch (e) {
     };
 
       
-    
-      async function getOneA(req,res,next)
-      {
-       Abonnement.findById((req.params.id),(err,obj)=>{
-        if(err){console.error(err);}
-        console.log(obj)
-        res.json(obj)
-       })}
-      
+    async function getOneA(req, res, next) {
+      try {
+        const obj = await Abonnement.findById(req.params.id);
+        console.log(obj);
+        res.json(obj);
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server error" });
+      }
+    }
        
     
     module.exports={addA,updateA,listA,deleteA,getOneA}

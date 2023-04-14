@@ -4,7 +4,6 @@ var Library  =require("./LibraryModel")
 const validatorRegisteeer = require("./validation/ValidCmntr");
 const badWords = require('bad-words');
 const https = require('https');
-const csv = require('csv-parser');
 
 function filterWords(text, badWords) {
   if (!badWords || badWords.length === 0) {
@@ -13,7 +12,7 @@ function filterWords(text, badWords) {
 
   for (let i = 0; i < badWords.length; i++) {
     const regex = new RegExp(`\\b${badWords[i]}\\b`, 'gi');
-    text = text.replace(regex, '*'.repeat(badWords[i].length));
+    text = text.replace(regex, ' *'.repeat(badWords[i].length));
   }
 
   return text;
