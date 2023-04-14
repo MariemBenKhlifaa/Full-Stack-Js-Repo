@@ -2,6 +2,7 @@ var express = require('express');
 var Library = require ("./LibraryModel")
 const validatorRegister = require("./validation/ValidLib");
 const Updateregistre= require("./validation/Updateregistre");
+var Abonnement =require ("./AbonnementModel")
 async function addL(req,res,next){
     const { errors, isValid } = validatorRegister(req.body);
 

@@ -48,8 +48,7 @@ catch (e) {
 
    }
   
-
-
+  
     
     async function updateA(req,res,next)
  {
@@ -80,7 +79,51 @@ catch (e) {
   }
   
 
-    
+  async function stat(req, res, next) {
+    try {
+      const library = await Library.findById(req.params.Libraryid); // use params instead of body to get the library ID
+  
+      if (!library) {
+        return res.status(404).json({ message: 'Library not found' });
+      }
+  
+      const abonnements = await Abonnement.find({ Libraryid: library._id }); // find abonnements for the given library
+  
+      if (!abonnements || abonnements.length === 0) { // check if abonnements is defined and not empty
+        return res.json({}); // return an empty object
+      }
+  
+      const counts = abonnements.reduce((acc, sub) => {
+        if (!acc[sub.Libraryid]) {
+          acc[sub.Libraryid] = 0;
+        }
+        acc[sub.Libraryid] += 1;
+        return acc;
+      }, {});
+  
+      res.json(counts);
+    } catch (err) {
+      next(err);
+    }
+  };
+  
+  // Route pour la statistique des abonnements
+  async function total(req, res, next) {
+    try {
+      const totalLibraries = await Library.countDocuments();
+      const totalAbonnements = await Abonnement.countDocuments();
+      const avgAbonnementsPerLibrary = totalAbonnements / totalLibraries;
+      res.json({
+        totalLibraries,
+        totalAbonnements,
+        avgAbonnementsPerLibrary,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Error getting total data' });
+    }
+  };
+  
 
     async function listA(req,res,next)
     {
@@ -123,4 +166,4 @@ catch (e) {
     }
        
     
-    module.exports={addA,updateA,listA,deleteA,getOneA}
+    module.exports={addA,updateA,listA,deleteA,getOneA,stat,total}
