@@ -123,6 +123,45 @@ catch (e) {
       res.status(500).json({ error: 'Error getting total data' });
     }
   };
+
+  async function ageStats(req, res, next) {
+    try {
+      const abonnements = await Abonnement.find();
+      const ageCounts = abonnements.reduce((acc, abonnement) => {
+        const ageGroup = Math.floor(abonnement.age / 10) * 10;
+        acc[ageGroup] = (acc[ageGroup] || 0) + 1;
+        return acc;
+      }, {});
+      const totalAbonnements = Object.values(ageCounts).reduce((acc, count) => acc + count, 0);
+      const ageStats = {};
+      for (let ageGroup in ageCounts) {
+        ageStats[ageGroup] = (ageCounts[ageGroup] / totalAbonnements) * 100;
+      }
+      res.json(ageStats);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Error getting age statistics' });
+    }
+  }
+  
+  
+  
+  async function tri(req, res, next) {
+    try {
+      // Récupération des abonnements depuis la base de données ou tout autre source de données
+      const abonnements = await Abonnement.find();
+  
+      // Tri des abonnements par âge
+      abonnements.sort((a, b) => a.age - b.age);
+  
+      // Renvoi des abonnements triés en réponse sous forme de JSON
+      res.json(abonnements);
+  
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Error ' });
+    }
+  };
   
 
     async function listA(req,res,next)
@@ -166,4 +205,4 @@ catch (e) {
     }
        
     
-    module.exports={addA,updateA,listA,deleteA,getOneA,stat,total}
+    module.exports={addA,updateA,listA,deleteA,getOneA,stat,total,tri,ageStats}

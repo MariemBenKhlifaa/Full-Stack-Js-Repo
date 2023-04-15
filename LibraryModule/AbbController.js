@@ -10,6 +10,8 @@ router.delete("/deletea/:id",service.deleteA)
 router.get("/getOneA/:id",service.getOneA)
 router.get("/stat/:Libraryid",service.stat)
 router.get("/total",service.total)
+router.get("/tri",service.tri)
+router.get("/age",service.ageStats)
 
 module.exports = router;
 
