@@ -6,16 +6,11 @@ async function addrendezvous(req,res,next){
  const userr= await user.findById(req.params.id);
  const patient=await user.findById(req.body.patientid)
 
- const patientdate=await rendezvous.findOne({userid:req.params.id,patient:req.params.patientid});
- console.log(patientdate)
-if (
+ 
+ const coach = await user.findById(req.params.id)
+ 
 
-  patientdate.date.getDay() === new Date(req.body.date).getDay()
-) {
-  return res.status(400).json({ message: "Vous avez déjà un rendez-vous avec ce coach à cette date." });
-}
-
-    const randivous = new rendezvous({
+  const randivous = new rendezvous({
        date: req.body.date,
        etat:"comfirmé",
        userid:userr._id,
@@ -26,8 +21,11 @@ if (
         if(err){console.error(err)}
         else{console.log(obj)}
       })
+     coach.rendezVous.push(randivous._id)
+     await coach.save();
     res.end();
-  }
+ }
+  
   async function getrendezvousbyuser(req,res,next){
 
   await rendezvous.find({userid:req.params.id,etat:'comfirmé'}).then((obj,err)=>{
@@ -63,7 +61,7 @@ if (
   }
   async function getrendezvousbypatient(req,res,next){
 
-    await rendezvous.find({patientid:req.params.id,etat:"comfirmé",date:{$gte:new Date()}}).then((obj,err)=>{
+    await rendezvous.find({patientid:req.params.id,etat:"comfirmé",date:new Date(),date:{$gte:new Date()}}).then((obj,err)=>{
         if(err){console.log(err)}
         else {console.log(obj);
           res.json(obj)
@@ -102,7 +100,20 @@ if (
      rdvupdate.save()
      .then((obj,err)=>{console.log(obj)})
     }
-  
+    async function getallrendezvousbycoach(req,res,next){
+
+      await rendezvous.find({userid:req.params.id}).then((obj,err)=>{
+          if(err){console.log(err)}
+          else {
+            res.json(obj);
+            console.log(obj)
+          }
+         })
+        
+         res.end()
+      
+      }
+     
 
 
   
@@ -113,6 +124,6 @@ module.exports={addrendezvous:addrendezvous,
   removerdv:removerdv,
   getrendezvousbypatient:getrendezvousbypatient,
   annulerRdv:annulerRdv,
-  getrendezvousbycoach:getrendezvousbycoach,updaterendezvous:updaterendezvous
+  getrendezvousbycoach:getrendezvousbycoach,updaterendezvous:updaterendezvous,getallrendezvousbycoach:getallrendezvousbycoach
 
 }

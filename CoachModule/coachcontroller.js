@@ -20,4 +20,5 @@ router.put("/annulerrdv/:id",authentifaction,servicerendezvous.annulerRdv,refres
 router.get("/getrdvbycoach/:id",authentifaction,servicerendezvous.getrendezvousbycoach,refreshToken)
 router.put("/updateavis/:idcoach/:idpatientavis",serviceavis.updateavis)
 router.put("/updaterdv/:id",servicerendezvous.updaterendezvous)
+router.get("/getallrdvbycoach/:id",authentifaction,servicerendezvous.getallrendezvousbycoach,refreshToken)
 module.exports = router;

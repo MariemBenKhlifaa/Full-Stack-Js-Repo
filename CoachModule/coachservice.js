@@ -3,10 +3,13 @@ const validatorRegister = require("../userModule/validation/register");
 const crypto = require('crypto');
 const bcrypt = require("bcryptjs");
 async function getAllCoach(req,res,next){
+ 
   const userr = await user.find({role:"coach"}).populate('avis');
+ 
   userr.forEach(element => {
     let somme = 0;
     let t=0;
+   // if(element.avis.length===0){res.json(element)}
     for (let i = 0; i < element.avis.length; i++) {
       somme += element.avis[i].nbravis;
       t=t+1;
