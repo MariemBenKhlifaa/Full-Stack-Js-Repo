@@ -7,9 +7,13 @@ var Course = new Schema({
   description: String,
   level: String,
   category: String,
-  duration: { type: Number, default: 0 },
+  duration: Number,
   img: String,
   lessons: [LessonModel.schema],
 });
 
-module.exports = mongoose.model("course", Course);
+Course.index({ title: "text" });
+const courseModel = mongoose.model("course", Course);
+courseModel.createIndexes();
+
+module.exports = courseModel;

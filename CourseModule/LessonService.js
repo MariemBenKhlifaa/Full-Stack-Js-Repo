@@ -1,42 +1,40 @@
 var express = require("express");
 var Lesson = require("./LessonModel");
 var Course = require("./CourseModel");
-const fileUpload = require('express-fileupload');
 
-async function addLFF(req, res, next) {
-  const newLesson = new Lesson({
-    number: req.body.number,
-    type: req.body.type,
-    content: req.body.content,
-    courseId: req.body.courseId,
-    //img: req.body.img.substring(req.body.img.lastIndexOf("\\") + 1),
-  }).save((err, data) => {
-    if (err) {
-      res.status(500).json(err);
-    } else {
-      updateCourse(newLesson, data, req, res);
-    }
-  });
-}
+// async function addLFF(req, res, next) {
+//   const newLesson = new Lesson({
+//     number: req.body.number,
+//     type: req.body.type,
+//     content: req.body.content,
+//     courseId: req.body.courseId,
+//   }).save((err, data) => {
+//     if (err) {
+//       res.status(500).json(err);
+//     } else {
+//       updateCourse(newLesson, data, req, res);
+//     }
+//   });
+// }
 
-function updateCourse(newLesson, data, req, res) {
-  Course.findById(req.body.courseId, (err, course) => {
-    if (err) {
-      res.status(500).json(err);
-    } else {
-      course.lessons.push(data._id);
-      course.save((err, newCourse) => {
-        if (err) {
-          res.status(500).json(err);
-        } else {
-          res.json(data);
-        }
-      });
-    }
-  });
-}
+// function updateCourse(newLesson, data, req, res) {
+//   Course.findById(req.body.courseId, (err, course) => {
+//     if (err) {
+//       res.status(500).json(err);
+//     } else {
+//       course.lessons.push(data._id);
+//       course.save((err, newCourse) => {
+//         if (err) {
+//           res.status(500).json(err);
+//         } else {
+//           res.json(data);
+//         }
+//       });
+//     }
+//   });
+// }
 
-async function addL(req, res, next) {
+async function addLesson(req, res, next) {
   let newLesson;
   try {
     const data = new Lesson({
@@ -58,7 +56,7 @@ async function addL(req, res, next) {
   }
 }
 
-async function updateL(req, res, next) {
+async function updateLesson(req, res, next) {
   Lesson.findByIdAndUpdate(
     req.params.id,
     {
@@ -74,7 +72,7 @@ async function updateL(req, res, next) {
   res.end();
 }
 
-async function listL(req, res, next) {
+async function listLessons(req, res, next) {
   try {
     const course = await Course.findById(req.params.courseId);
     const lessons = await Lesson.find({ _id: course.lessons });
@@ -84,7 +82,7 @@ async function listL(req, res, next) {
   }
 }
 
-deleteL = async (req, res, next) => {
+deleteLesson = async (req, res, next) => {
   try {
     const lesson = await Lesson.findById(req.params.id);
     const course = await Course.findByIdAndUpdate(lesson.courseId, {
@@ -101,7 +99,7 @@ deleteL = async (req, res, next) => {
     res.json(error);
   }
 };
-async function getOneL(req, res, next) {
+async function getOneLesson(req, res, next) {
   Lesson.findById(req.params.id, (err, obj) => {
     if (err) {
       console.error(err);
@@ -111,15 +109,14 @@ async function getOneL(req, res, next) {
   });
 }
 
-async function deleteL(req, res, next) {
-  const id = req.params.id;
+async function searchLesson(req, res, next) {
   try {
-    await Lesson.deleteOne({ _id: id }); // delete the comment with the given ID
-    res.sendStatus(204); // send a "no content" response if the comment was successfully deleted
-  } catch (err) {
-    console.error(err);
-    res.sendStatus(500); // send a "server error" response if there was a problem deleting the comment
+    // const course = await Course.find({ $text: { $search: req.params.title } });
+    const lesson = await Lesson.find({ type: { $regex: req.params.type, $options: "i" } });
+    res.json(lesson);
+  } catch (e) {
+    res.status(500).json(e);
   }
 }
 
-module.exports = { addL, updateL, listL, deleteL, getOneL };
+module.exports = { addLesson, updateLesson, listLessons, deleteLesson, getOneLesson, searchLesson };

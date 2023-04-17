@@ -2,10 +2,12 @@ var express = require("express");
 var router = express.Router();
 var service = require("./LessonService");
 
-router.post("/addl", service.addL);
-router.put("/updatel/:id", service.updateL);
-router.get("/listL/:courseId", service.listL);
-router.delete("/deleteL/:id", service.deleteL);
-router.get("/getOneL/:id", service.getOneL);
+router.post("/addLesson", service.addLesson);
+router.put("/updateLesson/:id", service.updateLesson);
+router.get("/listLessons/:courseId", service.listLessons);
+router.delete("/deleteLesson/:id", service.deleteLesson);
+router.get("/getOneLesson/:id", service.getOneLesson);
+router.get("/searchLesson/:type", service.searchLesson);
+
 
 module.exports = router;
