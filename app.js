@@ -1,12 +1,14 @@
 require("dotenv").config();
 require("./CoachModule/nodescheduler");
+require("./chat/socket");
 var http = require("http");
 var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
-
+var conversation = require("./chat/conversations")
+var message = require("./chat/messages")
 var indexRouter = require("./routes/index");
 var usersRouter = require("./userModule/userController");
 var libraryRouter = require("./LibraryModule/LibraryController");
@@ -47,6 +49,7 @@ server.listen(3000, () => {
   console.log("server strated");
 });
 
+
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "twig");
@@ -61,6 +64,8 @@ app.use("/users", usersRouter);
 app.use("/library", libraryRouter);
 app.use("/commentaire", commentaireRouter);
 app.use("/coach", coachrouter);
+app.use("/message",message)
+app.use("/conversation",conversation)
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));

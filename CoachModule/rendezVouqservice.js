@@ -8,6 +8,7 @@ async function addrendezvous(req,res,next){
 
  
  const coach = await user.findById(req.params.id)
+ const patientt = await user.findById(req.body.patientid)
  
 
   const randivous = new rendezvous({
@@ -23,6 +24,8 @@ async function addrendezvous(req,res,next){
       })
      coach.rendezVous.push(randivous._id)
      await coach.save();
+     patientt.rendezVous.push(randivous)
+     await patientt.save();
     res.end();
  }
   
@@ -113,6 +116,18 @@ async function addrendezvous(req,res,next){
          res.end()
       
       }
+      async function getrendezvousbyid(){
+        await rendezvous.findById(req.params.id).then((obj,err)=>{
+          if(err){console.log(err)}
+          else {
+            res.json(obj);
+            console.log(obj)
+          }
+         })
+        
+         res.end()
+      
+      }
      
 
 
@@ -124,6 +139,7 @@ module.exports={addrendezvous:addrendezvous,
   removerdv:removerdv,
   getrendezvousbypatient:getrendezvousbypatient,
   annulerRdv:annulerRdv,
-  getrendezvousbycoach:getrendezvousbycoach,updaterendezvous:updaterendezvous,getallrendezvousbycoach:getallrendezvousbycoach
+  getrendezvousbycoach:getrendezvousbycoach,updaterendezvous:updaterendezvous
+  ,getallrendezvousbycoach:getallrendezvousbycoach,getrendezvousbyid:getrendezvousbyid
 
 }
