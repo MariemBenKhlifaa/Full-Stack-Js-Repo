@@ -4,9 +4,11 @@ var Library=require('./LibraryModel')
 const validatorRegister = require("./validation/ControleSaisie");
 const validatorRegistere = require("./validation/UpAge");
 const UpAbo = require("./validation/UpAbo");
+var User=require("../userModule/userModel")
 
 async function addA(req,res,next){
     const { errors, isValid } = validatorRegister(req.body);
+    const user=await User.findById(req.body.userid);
 
     console.log(req.body)
     console.log(isValid)
@@ -22,6 +24,7 @@ async function addA(req,res,next){
         age:req.body.age,
         city:req.body.city,
         tel:req.body.tel,
+        userid:user._id,
         email:req.body.email,
         Duration:req.body.Duration,
         image:req.body.image.substring(req.body.image.lastIndexOf("\\") + 1),
@@ -32,7 +35,10 @@ async function addA(req,res,next){
     library.abonnements.push(newAbonnement._id);
    library.save();
     res.json(data);
-   
+    if (user == null) {
+      res.status(404).send("User not found");
+      return;
+    }  
 } 
 catch (e) {
     res.status(500).json(e);
@@ -78,7 +84,15 @@ catch (e) {
    
   }
   
-
+  async function getuserbyiid(req,res,next){
+    await User.findById(req.params.id).then((obj,err)=>{
+      if(err){console.log(err)}
+      else{console.log(obj);
+      res.json(obj)}
+  
+    })
+  }  
+  
   async function stat(req, res, next) {
     try {
       const library = await Library.findById(req.params.Libraryid); // use params instead of body to get the library ID
@@ -205,4 +219,4 @@ catch (e) {
     }
        
     
-    module.exports={addA,updateA,listA,deleteA,getOneA,stat,total,tri,ageStats}
+    module.exports={addA,updateA,listA,deleteA,getOneA,stat,total,tri,ageStats,getuserbyiid}

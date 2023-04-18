@@ -12,7 +12,7 @@ async function addL(req,res,next){
     newLibrary= new Library(
      {
         name:req.body.name,
-        adresse:req.body.adresse,
+        location:req.body.location,
         pays:req.body.pays,
         email:req.body.email,
         tel:req.body.tel,
@@ -39,7 +39,7 @@ async function addL(req,res,next){
     Library.findByIdAndUpdate(req.params.id,{
        
         name:req.body.name,
-        adresse:req.body.adresse,
+        location:req.body.location,
         pays:req.body.pays,
         email:req.body.email,
         tel:req.body.tel,

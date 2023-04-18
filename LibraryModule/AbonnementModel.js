@@ -11,7 +11,15 @@ var Abonnement=new Schema({
     email:String,
     image:String,
     Duration:String,
-    Libraryid:String
+    Libraryid:String,
+    userid:{
+        type: mongoose.Types.ObjectId,
+        ref:"user"
+       },
+       User:{
+        type: mongoose.Types.ObjectId,
+        ref:"user"
+       }
 
     
    

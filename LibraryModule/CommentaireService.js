@@ -4,7 +4,7 @@ var Library  =require("./LibraryModel")
 const validatorRegisteeer = require("./validation/ValidCmntr");
 const badWords = require('bad-words');
 const https = require('https');
-
+var User=require("../userModule/userModel")
 function filterWords(text, badWords) {
   if (!badWords || badWords.length === 0) {
     return text;
@@ -20,6 +20,7 @@ function filterWords(text, badWords) {
 
 async function addC(req, res, next) {
   const { errors, isValid } = validatorRegisteeer(req.body);
+  const user=await User.findById(req.body.userid);
 
   console.log(req.body)
   console.log(isValid)
@@ -33,6 +34,8 @@ async function addC(req, res, next) {
 
       const data = Commentaire({
         description: filteredText,
+        username:req.body.username,
+        userid:user._id,
         dateEnvoi: Date.now(),
         Libraryid: req.body.Libraryid,
       });
@@ -40,13 +43,20 @@ async function addC(req, res, next) {
       newCommentaire = await data.save();
 
       const library = await Library.findById(req.body.Libraryid);
+
       if (library) {
         library.commentaires.push(newCommentaire._id);
         const newLibrary = await library.save();
         res.json(data);
       } else {
         res.status(404).send("Library not found");
+
+      } 
+      if (user == null) {
+        res.status(404).send("User not found");
+        return;
       }
+
     } catch (e) {
       res.status(500).json(e);
       console.log(e);
@@ -54,10 +64,14 @@ async function addC(req, res, next) {
         newCommentaire.delete();
       }
     }
-  } else {
+    
+  } 
+  
+  else {
     console.log(errors)
     return res.status(403).json(errors);
   }
+ 
 }
 
     async function updateC(req,res,next)
@@ -71,7 +85,15 @@ async function addC(req, res, next) {
     res.end()
  }
 
-    
+ async function getuserbyid(req,res,next){
+  await User.findById(req.params.id).then((obj,err)=>{
+    if(err){console.log(err)}
+    else{console.log(obj);
+    res.json(obj)}
+
+  })
+}  
+
 
     async function listC(req,res,next){
     try {
@@ -113,4 +135,4 @@ async function addC(req, res, next) {
 
 
     
-    module.exports={addC,updateC,listC,deletec,listc}
+    module.exports={addC,updateC,listC,deletec,listc,getuserbyid}

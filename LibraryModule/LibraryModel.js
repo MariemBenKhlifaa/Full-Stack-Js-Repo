@@ -4,7 +4,7 @@ var Commentaire=require("./CommentaireModel")
 var Abonnement=require("./AbonnementModel")
 var Library=new Schema({
     name:String,
-    adresse:String,
+    location:String,
     pays:String,
     email:String,
     tel:String,

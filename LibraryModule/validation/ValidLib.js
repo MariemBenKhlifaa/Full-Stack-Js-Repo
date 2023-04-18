@@ -27,8 +27,8 @@ function ValidLib(data){
         errors.tel = "Required tel";
 
     }
-    if (regexvide.test(data.adresse)) {
-        errors.adresse = "Required adresse";
+    if (regexvide.test(data.location)) {
+        errors.location = "Required location";
 
     }
     if (regexvide.test(data.img)) {

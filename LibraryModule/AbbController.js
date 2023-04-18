@@ -12,6 +12,7 @@ router.get("/stat/:Libraryid",service.stat)
 router.get("/total",service.total)
 router.get("/tri",service.tri)
 router.get("/age",service.ageStats)
+router.get("/getuserbyid/:id",service.getuserbyiid)
 
 module.exports = router;
 
