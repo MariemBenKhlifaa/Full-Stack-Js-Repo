@@ -8,6 +8,10 @@ var User = new Schema({
   username: String,
   pwd: String,
   image: String,
+  newsLetter : {
+    type : Boolean,
+    default : true
+},
   
   role: {
     type: String,
