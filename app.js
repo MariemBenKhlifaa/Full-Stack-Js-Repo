@@ -7,8 +7,8 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
-var conversation = require("./chat/conversations")
-var message = require("./chat/messages")
+var conversation = require("./chat/conversations");
+var message = require("./chat/messages");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./userModule/userController");
 var libraryRouter = require("./LibraryModule/LibraryController");
@@ -17,7 +17,9 @@ var coachrouter = require("./CoachModule/coachcontroller");
 const cors = require("cors");
 const sessions = require("express-session");
 var abonnementRouter = require("./LibraryModule/AbbController");
-
+var courseRouter = require("./CourseModule/CourseController");
+var lessonRouter = require("./CourseModule/LessonController");
+var fileUploadRouter = require("./routes/fileUploadRoute");
 
 var app = express();
 const oneDay = 1000 * 60 * 60 * 24;
@@ -31,6 +33,7 @@ app.use(
 );
 
 app.use(cors({ credentials: true, origin: "http://localhost:3001" }));
+
 app.use(cookieParser());
 app.use(express.json());
 var mongoose = require("mongoose");
@@ -51,9 +54,9 @@ server.listen(3000, () => {
   console.log("server strated");
 });
 
-
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
+
 app.set("view engine", "twig");
 
 app.use(logger("dev"));
@@ -67,8 +70,12 @@ app.use("/library", libraryRouter);
 app.use("/commentaire", commentaireRouter);
 app.use("/abonnement", abonnementRouter);
 app.use("/coach", coachrouter);
-app.use("/message",message)
-app.use("/conversation",conversation)
+app.use("/message", message);
+app.use("/conversation", conversation);
+app.use("/upload", fileUploadRouter);
+app.use("/course", courseRouter);
+app.use("/lesson", lessonRouter);
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
