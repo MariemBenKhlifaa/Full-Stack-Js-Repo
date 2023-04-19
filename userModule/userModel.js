@@ -39,5 +39,19 @@ var User = new Schema({
   ],
   
 
+  commentaire:[
+    {
+     type:mongoose.Types.ObjectId,
+     ref:"commentaire"
+ 
+    }
+   ],
+   abonnement:[
+    {
+     type:mongoose.Types.ObjectId,
+     ref:"abonnement"
+ 
+    }
+   ]
 });
 module.exports = mongoose.model("user", User);

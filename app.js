@@ -16,6 +16,8 @@ var commentaireRouter = require("./LibraryModule/CommentaireController");
 var coachrouter = require("./CoachModule/coachcontroller");
 const cors = require("cors");
 const sessions = require("express-session");
+var abonnementRouter = require("./LibraryModule/AbbController");
+
 
 var app = express();
 const oneDay = 1000 * 60 * 60 * 24;
@@ -63,6 +65,7 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/library", libraryRouter);
 app.use("/commentaire", commentaireRouter);
+app.use("/abonnement", abonnementRouter);
 app.use("/coach", coachrouter);
 app.use("/message",message)
 app.use("/conversation",conversation)
