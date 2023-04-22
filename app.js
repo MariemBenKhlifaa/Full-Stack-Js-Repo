@@ -13,6 +13,11 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./userModule/userController");
 var libraryRouter = require("./LibraryModule/LibraryController");
 var commentaireRouter = require("./LibraryModule/CommentaireController");
+var EventRouter = require('./EventsModule/EventController')
+var ReviewRouter = require('./EventsModule/ReviewController')
+var ParticipateRouter= require('./EventsModule/ParticipateController')
+var likeEventRouter= require('./EventsModule/likeEventController')
+
 var coachrouter = require("./CoachModule/coachcontroller");
 const cors = require("cors");
 const sessions = require("express-session");
@@ -68,6 +73,12 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/library", libraryRouter);
 app.use("/commentaire", commentaireRouter);
+app.use('/events', EventRouter);
+app.use('/review', ReviewRouter);
+app.use('/participate', ParticipateRouter);
+app.use('/likeEvent', likeEventRouter);
+
+
 app.use("/abonnement", abonnementRouter);
 app.use("/coach", coachrouter);
 app.use("/message", message);
