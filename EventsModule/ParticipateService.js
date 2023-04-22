@@ -2,11 +2,17 @@ var express = require('express');
 var Participate = require ("./ParticipateModel")
 var Event = require ("./EventModel")
 var User =require ("../userModule/userModel")
+const validatorRegisterrr = require("./validations/Uppart");
 
 
 
 
 async function addpart(req,res,next){
+  const { errors, isValid } = validatorRegisterrr(req.body);
+
+console.log(req.body)
+console.log(isValid)
+if(isValid==true){
    // const userr= await User.findById(req.params.idu);
     const eventt= await Event.findById(req.params.ide);
 
@@ -24,7 +30,10 @@ async function addpart(req,res,next){
            else{console.log(obj)}
          })
        res.end();
-     }
+     } else{
+      console.log(errors)
+      return res.status(403).json(errors);
+    }}
 async function createParticipation(req,res,next){
 
 const newParticipate=new Participate(req.body)

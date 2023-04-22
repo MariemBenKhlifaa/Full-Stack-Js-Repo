@@ -4,6 +4,7 @@ function Uppart(data){
     let errors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const telRegex = /^(20|52|21|22|23|24|25|27|71)\d{6}$/;
+    const regexvide = /^\s*$/;
 
     if (!validator.isLength(data.fullName, { min: 3, max: 50 })) {
         errors.fullName = 'Le champ fullName doit contenir entre 3 et 10 caractères';

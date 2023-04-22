@@ -1,11 +1,19 @@
 var express = require('express');
 var Library = require ("./LibraryModel")
+const validatorRegister = require("./validation/ValidLib");
+const Updateregistre= require("./validation/Updateregistre");
+var Abonnement =require ("./AbonnementModel")
 async function addL(req,res,next){
+    const { errors, isValid } = validatorRegister(req.body);
 
+    console.log(req.body)
+    console.log(isValid)
+    if(isValid==true){
     newLibrary= new Library(
      {
         name:req.body.name,
-        adresse:req.body.adresse,
+        location:req.body.location,
+        pays:req.body.pays,
         email:req.body.email,
         tel:req.body.tel,
         img:req.body.img.substring(req.body.img.lastIndexOf("\\") + 1)
@@ -15,26 +23,39 @@ async function addL(req,res,next){
         console.log(data)
         res.json(data)}
     })
+  }  else{
+        console.log(errors)
+        return res.status(403).json(errors);
+      }
     }
     async function updateL(req,res,next)
  {
-  
+    const { errors, isValid } = Updateregistre(req.body);
+
+    console.log(req.body)
+    console.log(isValid)
+    if(isValid==true){
 
     Library.findByIdAndUpdate(req.params.id,{
-      
+       
         name:req.body.name,
-        adresse:req.body.adresse,
+        location:req.body.location,
+        pays:req.body.pays,
         email:req.body.email,
         tel:req.body.tel,
         img:req.body.img.substring(req.body.img.lastIndexOf("\\") + 1)
 
-         
-    
-      
     
     },{new:true},(obj)=>{console.log(obj)})
-    res.end()
- }
+    res.end();
+ } 
+ else{
+    console.log(errors)
+    return res.status(403).json(errors);
+  }  
+ 
+}
+
 
     
 
@@ -56,46 +77,36 @@ async function addL(req,res,next){
   }
   async function getOneL(req,res,next)
   {
-   Library.findById((req.params.id),(err,obj)=>{
-    if(err){console.error(err);}
+    try {
+      const obj = await  Library.findById(req.params.id)
     console.log(obj)
     res.json(obj)
-   })}
-  
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }}
    
-   
-async function deleteL(req, res, next) {
-    const id = req.params.id;
-  
-    if (!id) {
-      return res.status(400).send('Invalid ID parameter');
-    }
-  
-    let session;
+     
+   async function getbynom(req, res, next) {
     try {
-      session = await Library.startSession();
-      session.startTransaction();
-  
-      const doc = await Library.findById(id).session(session);
-      if (!doc) {
-        return res.status(404).send('Document not found');
-      }
-  
-      await Library.deleteOne({ _id: id }).session(session);
-      await session.commitTransaction();
-  
-      res.send('Document deleted successfully');
-    } catch (error) {
-      console.error(error);
-      if (session) {
-        await session.abortTransaction();
-      }
-      return res.status(500).send('Error deleting document');
-    } finally {
-      if (session) {
-        session.endSession();
-      }
+      const obj = await Library.find({ name: { $regex :req.params.name, $options: "i"}});
+      res.json(obj);
+    } catch (err) {
+      console.error(err);
+      next(err);
     }
   }
+   
 
-    module.exports={addL,updateL,listL,deleteL,getOneL}
+async function deleteL(req, res, next) {
+  const id = req.params.id;
+  try {
+    await Library.deleteOne({ _id: id }); // delete the comment with the given ID
+    res.sendStatus(204); // send a "no content" response if the comment was successfully deleted
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(500); // send a "server error" response if there was a problem deleting the comment
+  }
+  }
+
+    module.exports={addL,updateL,listL,deleteL,getOneL,getbynom}

@@ -71,13 +71,14 @@ async function addev(req,res,next){
       return res.status(403).json(errors);
     }
     }
-async function updateev(req,res,next)
+async function updateev(req,res,next){
+const { errors, isValid } = validatorRegisterr(req.body);
 
+console.log(req.body)
+console.log(isValid)
+if(isValid==true){
  {
-  const { errors, isValid } = validatorRegisterr(req.body);
-  console.log(req.body)
-  console.log(isValid)
-  if(isValid==true){
+
     Event.findByIdAndUpdate(req.params.id,{
       
         title:req.body.title,
@@ -89,12 +90,15 @@ async function updateev(req,res,next)
         nbLikes:req.body.nbLikes
     
     },{new:true},(obj)=>{console.log(obj)})
-    res.end() } 
-    else{
-       console.log(errors)
-       return res.status(403).json(errors);
-     }  
+    res.end() 
+    
+   
  }
+}  else{
+  console.log(errors)
+  return res.status(403).json(errors);
+}}
+
 
 //getAllEvents
 

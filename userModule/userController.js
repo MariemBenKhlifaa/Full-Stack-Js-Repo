@@ -27,6 +27,7 @@ router.get("/userconnecte", authentifaction, service.getuserconnecte, refreshTok
 router.get("/refresh", authentifaction, service.refresh, refreshToken);
 router.get("/blockuser/:id", authentifaction, permission("admin"), service.blockuser, refreshToken);
 router.post("/changerpwd/:username",authentifaction, service.changerpwd, refreshToken)
+router.get("/getcoachclient",service.getcoachclient)
 
 
 module.exports = router;

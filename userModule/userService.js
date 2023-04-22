@@ -252,7 +252,13 @@ catch (err) {
   return new Error(err);
 }
 }
-
+async function getcoachclient(req,res,next){
+  user.find({role:"user" , role:"coach"}).then((obj,err)=>{
+    if(err){console.error(err)}
+    console.log(obj)
+    res.json(obj)
+  })
+}
 
 // const homePage = async function (req, res) {
 //   // Check if we have the session set.
@@ -282,5 +288,5 @@ module.exports = {
   refresh: refresh,
   getuserconnecte: getuserconnecte,
   blockuser:blockuser,
-  changerpwd:changerpwd
+  changerpwd:changerpwd,getcoachclient:getcoachclient
 };
