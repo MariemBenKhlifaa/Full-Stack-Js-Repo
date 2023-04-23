@@ -73,4 +73,14 @@ async function searchCourse(req, res, next) {
   }
 }
 
-module.exports = { addCourse, updateCourse, listCourses, deleteCourse, getOneCourse, searchCourse };
+async function filterCourse(req, res, next) {
+  try {
+    const course = await Course.find({ category: req.query.category });
+    console.log(course);
+    res.json(course);
+  } catch (e) {
+    res.status(500).json(e);
+  }
+}
+
+module.exports = { addCourse, updateCourse, listCourses, deleteCourse, getOneCourse, searchCourse, filterCourse };

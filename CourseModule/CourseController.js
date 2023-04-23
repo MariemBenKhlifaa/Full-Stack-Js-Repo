@@ -8,5 +8,6 @@ router.get("/listCourses", service.listCourses);
 router.delete("/deleteCourse/:id", service.deleteCourse);
 router.get("/getOneCourse/:id", service.getOneCourse);
 router.get("/search/:title", service.searchCourse);
+router.get("/filter", service.filterCourse);
 
 module.exports = router;
