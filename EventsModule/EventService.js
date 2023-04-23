@@ -268,7 +268,27 @@ async function addLIKE (ide,idu){
     }
        
 
+async function getlikebyuserevent(req,res,next){
+  try{
+ await likeeventtt.find({Event: req.params.ide,
+      user: req.params.idu}).then(
+        (obj,err)=>{
+          console.log(obj
+            )
+          res.json(obj)
+        }
+      )
+      
 
+      
+
+  }
+  catch{
+    res.json({ success: false, message: error });
+
+  }
+  res.end()
+}
 
 
 async function GetEventCount(req,res, next) {
@@ -390,4 +410,4 @@ async function unsubscribeNewsLetter (req,res){
 
 
 
-module.exports={addev,updateev,listev,deleteev,listoneev,searchbytitle,GetEventCount,subscribe,unsubscribeNewsLetter,getSubscribers,sendSubscriptionSMS,incrementLikes,likeeventt,getbynom,decrementLikes,dislikeeventt,delLike}
+module.exports={addev,updateev,listev,deleteev,listoneev,searchbytitle,GetEventCount,subscribe,unsubscribeNewsLetter,getSubscribers,sendSubscriptionSMS,incrementLikes,likeeventt,getbynom,decrementLikes,dislikeeventt,delLike,getlikebyuserevent}

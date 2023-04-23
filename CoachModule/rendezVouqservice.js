@@ -2,30 +2,41 @@ const { get } = require('mongoose');
 var user = require('../userModule/userModel')
 var rendezvous = require('./rendevousModel');
 const { date } = require('yup');
+const validatorRegister = require("./validatinnum");
+
 async function addrendezvous(req,res,next){
+  const { errors, isValid } = validatorRegister(req.body.tel);
+  console.log(isValid)
+  if(isValid===true){
  const userr= await user.findById(req.params.id);
  const patient=await user.findById(req.body.patientid)
 
  
  const coach = await user.findById(req.params.id)
  const patientt = await user.findById(req.body.patientid)
- 
 
   const randivous = new rendezvous({
-       date: req.body.date,
-       etat:"comfirmé",
-       userid:userr._id,
-       tel:req.body.tel,
-       patientid:patient._id
-      }); 
-     await randivous.save().then((obj,err)=>{
-        if(err){console.error(err)}
-        else{console.log(obj)}
-      })
-     coach.rendezVous.push(randivous._id)
-     await coach.save();
-     patientt.rendezVous.push(randivous)
-     await patientt.save();
+    date: req.body.date,
+    etat:"comfirmé",
+    userid:userr._id,
+    tel:req.body.tel,
+    patientid:patient._id
+   }); 
+  await randivous.save().then((obj,err)=>{
+     if(err){console.error(err)}
+     else{console.log(obj)}
+   })
+  coach.rendezVous.push(randivous._id)
+  await coach.save();
+  patientt.rendezVous.push(randivous)
+  await patientt.save();
+}
+else{
+  console.log(errors)
+  return res.status(403).json(errors);
+}
+
+  
     res.end();
  }
   

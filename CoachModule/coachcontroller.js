@@ -7,7 +7,7 @@ var serviceavis=require("./avisservice")
 var {authentifaction} = require("../userModule/middleware/auth")
 var permission = require("../userModule/middleware/isadmin");
 var refreshToken = require("../userModule/middleware/refershtoken");
-router.get("/getallcoach", authentifaction,servicecoach.getAllCoach, refreshToken);
+router.get("/getallcoach", servicecoach.getAllCoach);
 router.post("/addcoach/:role",authentifaction,permission("admin"),servicecoach.addCoach, refreshToken)
 router.post("/addrendezvous/:id",servicerendezvous.addrendezvous)
 router.get("/getrendezvous/:id",authentifaction,servicerendezvous.getrendezvousbyuser,refreshToken)
