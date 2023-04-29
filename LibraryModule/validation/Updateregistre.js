@@ -18,8 +18,8 @@ function Updateregistre(data){
       
 
      
-    if (!validator.isLength(data.adresse, { min: 3, max: 50 })) {
-      errors.adresse = 'Le champ nom doit contenir entre 3 et 150 caractères';
+    if (!validator.isLength(data.location, { min: 3, max: 50 })) {
+      errors.location = 'Le champ nom doit contenir entre 3 et 150 caractères';
     }
 
   

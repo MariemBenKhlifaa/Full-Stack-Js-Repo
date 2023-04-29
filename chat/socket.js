@@ -5,6 +5,7 @@ const io = require("socket.io")(8900, {
 });
 
 let users = [];
+let messages = []; 
 
 const addUser = (userId, socketId) => {
   console.log(userId);
@@ -27,20 +28,30 @@ io.on("connection", (socket) => {
   //take userId and socketId from user
   socket.on("addUser", (userId) => {
     addUser(userId, socket.id);
-    console.log(socket.id);
+    const unsentMessages = messages.filter((msg) => msg.receiverId === userId);
+    if (unsentMessages.length > 0) {
+      unsentMessages.forEach(({ senderId, text }) => {
+        io.to(socket.id).emit("getMessage", { senderId, text });
+      });
+  
+      // Remove any unsent messages from the array
+      messages = messages.filter((msg) => msg.receiverId !== userId);
+    }
     io.emit("getUsers", users);
+  
   });
   console.log("a user connected.");
   console.log(users);
   //send and get message
   socket.on("sendMessage", ({ senderId, receiverId, text }) => {
     const user = getUser(receiverId);
-    console.log(user);
-
-    io.to(user.socketId).emit("getMessage", {
-      senderId,
-      text,
-    });
+    if (user) {
+      // If the user is connected, send the message
+      io.to(user.socketId).emit("getMessage", { senderId, text });
+    } else {
+      // If the user is not connected, store the message
+      messages.push({ receiverId, senderId, text });
+    }
   });
 
   //when disconnect
