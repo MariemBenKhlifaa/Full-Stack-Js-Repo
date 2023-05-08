@@ -80,10 +80,11 @@ app.use('/likeEvent', likeEventRouter);
 
 
 app.use("/abonnement", abonnementRouter);
-app.use("/coach", coachrouter);
+
 app.use("/message", message);
 app.use("/conversation", conversation);
 app.use("/upload", fileUploadRouter);
+app.use("/coach", coachrouter);
 app.use("/course", courseRouter);
 app.use("/lesson", lessonRouter);
 

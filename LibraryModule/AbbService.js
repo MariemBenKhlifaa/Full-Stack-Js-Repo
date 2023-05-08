@@ -27,7 +27,7 @@ async function addA(req,res,next){
         userid:user._id,
         email:req.body.email,
         Duration:req.body.Duration,
-        image:req.body.image.substring(req.body.image.lastIndexOf("\\") + 1),
+        image:req.body.image,
         Libraryid:req.body.Libraryid
     });
     newAbonnement = await data.save();

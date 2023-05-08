@@ -8,7 +8,7 @@ var {authentifaction} = require("../userModule/middleware/auth")
 var permission = require("../userModule/middleware/isadmin");
 var refreshToken = require("../userModule/middleware/refershtoken");
 router.get("/getallcoach", servicecoach.getAllCoach);
-router.post("/addcoach/:role",authentifaction,permission("admin"),servicecoach.addCoach, refreshToken)
+router.post("/addcoach/:role",servicecoach.addCoach)
 router.post("/addrendezvous/:id",servicerendezvous.addrendezvous)
 router.get("/getrendezvous/:id",authentifaction,servicerendezvous.getrendezvousbyuser,refreshToken)
 router.get("/getuserbyid/:id",servicerendezvous.getuserbyid)
@@ -22,4 +22,5 @@ router.put("/updateavis/:idcoach/:idpatientavis",serviceavis.updateavis)
 router.put("/updaterdv/:id",servicerendezvous.updaterendezvous)
 router.get("/getallrdvbycoach/:id",authentifaction,servicerendezvous.getallrendezvousbycoach,refreshToken)
 router.get("/getrdvbyid/:id",servicerendezvous.getrendezvousbyid)
+router.get("/topcoach",servicecoach.topcoach)
 module.exports = router;

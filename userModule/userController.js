@@ -12,10 +12,6 @@ router.post("/resetpassword/:token", resetpassword);
 router.post("/getpassword/:email", getPassword);
 router.post("/googlelogin", googlelogin);
 
-router.get("/", function (req, res, next) {
-  res.send("hello user");
-});
-
 router.post("/add/:role", service.add);
 router.get("/show/:name", authentifaction, permission("admin"), service.list, refreshToken);
 router.get("/delete/:id", authentifaction, permission("admin"), service.deleteuser, refreshToken);

@@ -16,7 +16,7 @@ async function addL(req,res,next){
         pays:req.body.pays,
         email:req.body.email,
         tel:req.body.tel,
-        img:req.body.img.substring(req.body.img.lastIndexOf("\\") + 1)
+        img:req.body.img
     }).save((err,data)=>{
         if(err){
             res.status(500).json(err)}else{
@@ -108,5 +108,18 @@ async function deleteL(req, res, next) {
     res.sendStatus(500); // send a "server error" response if there was a problem deleting the comment
   }
   }
+  async function listl2(req,res,next)
+  {
+    try {
+      const obj = await Library.find().sort({ _id: -1 }).limit(2);
+      console.log(obj);
+      res.json(obj);
+    } catch (err) {
+      console.error(err);
+      
+    }}
 
-    module.exports={addL,updateL,listL,deleteL,getOneL,getbynom}
+  
+
+
+    module.exports={addL,updateL,listL,deleteL,getOneL,getbynom,listl2}

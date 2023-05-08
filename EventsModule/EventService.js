@@ -29,7 +29,7 @@ async function addev(req,res,next){
         date:req.body.date,
         nbLikes:req.body.nbLikes,
         //img:req.body.img.substring(req.body.img.lastIndexOf("\\") + 1)
-        img:image.substring(req.body.img.lastIndexOf("\\") + 1)
+        img:req.body.img
 
     }).save((err,data)=>{
         if(err){

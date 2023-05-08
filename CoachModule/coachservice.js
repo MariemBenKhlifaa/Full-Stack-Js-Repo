@@ -27,7 +27,6 @@ async function addCoach(req,res,next){
     const { errors, isValid } = validatorRegister(req.body);
 
   console.log(req.body)
-  const imagee = req.body.image;
   console.log(isValid)
   if(isValid==true){
     
@@ -39,11 +38,13 @@ async function addCoach(req,res,next){
       email: req.body.email,
       pwd: bcrypt.hashSync(req.body.pwd),
       role: req.params.role,
-      image: imagee.substring(imagee.lastIndexOf("\\") + 1),
+    //  image: imagee.substring(imagee.lastIndexOf("\\") + 1),
+    
       specialite: req.body.specialite,
       biographie:req.body.biographie,
       telephone:req.body.telephone,
-      adresseCabinet:req.body.adresseCabinet
+      adresseCabinet:req.body.adresseCabinet,
+      image:req.body.image
     });
 
   
@@ -77,9 +78,30 @@ async function addCoach(req,res,next){
       console.log(errors)
       return res.status(403).json(errors);
     }
+
    
+}
+async function topcoach (req,res,next){
+  const userr = await user.find({ role: "coach" }).populate("avis");
+
+userr.forEach((element) => {
+  let somme = 0;
+  let t = 0;
+  for (let i = 0; i < element.avis.length; i++) {
+    somme += element.avis[i].nbravis;
+    t = t + 1;
+  }
+  element.statavis = somme / t;
+  element.save();
+});
+
+userr.sort((a, b) => b.statavis - a.statavis);
+
+const top4 = userr.slice(0, 4);
+
+res.json(top4);
 }
 
 
 
-module.exports = {getAllCoach:getAllCoach,addCoach:addCoach}
+module.exports = {getAllCoach:getAllCoach,addCoach:addCoach,topcoach:topcoach}

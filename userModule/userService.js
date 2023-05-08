@@ -22,7 +22,7 @@ async function add(req, res, next) {
       email: req.body.email,
       pwd: bcrypt.hashSync(req.body.pwd),
       role: req.params.role,
-      image: imagee.substring(imagee.lastIndexOf("\\") + 1),
+      image:imagee
     });
 
   
