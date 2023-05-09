@@ -26,7 +26,7 @@ router.get('/getch',service.getSubscribers);
 router.put("/unsubscribeNewsLetter",service.unsubscribeNewsLetter)
 router.post("/subscribe",service.subscribe)
 router.post("/sms",service.sendSubscriptionSMS)
-
+router.get('/getev',service.listev2);
 
 
 

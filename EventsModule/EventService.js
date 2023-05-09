@@ -111,7 +111,15 @@ async function listev(req,res,next)
       res.json(obj)
      }).populate('reviews')}
 
-
+     async function listev2(req,res,next)
+     {
+     
+        Event.find({date:{$gte:new Date()}}).populate('reviews').then((obj,err)=>{
+          if(err){console.error(err)}
+          console.log(obj)
+          res.json(obj)
+        })}
+   
 // get single event
   async function listoneev(req,res,next)
   {
@@ -410,4 +418,4 @@ async function unsubscribeNewsLetter (req,res){
 
 
 
-module.exports={addev,updateev,listev,deleteev,listoneev,searchbytitle,GetEventCount,subscribe,unsubscribeNewsLetter,getSubscribers,sendSubscriptionSMS,incrementLikes,likeeventt,getbynom,decrementLikes,dislikeeventt,delLike,getlikebyuserevent}
+module.exports={addev,updateev,listev,deleteev,listoneev,searchbytitle,GetEventCount,subscribe,unsubscribeNewsLetter,getSubscribers,sendSubscriptionSMS,incrementLikes,likeeventt,getbynom,decrementLikes,dislikeeventt,delLike,getlikebyuserevent,listev2}

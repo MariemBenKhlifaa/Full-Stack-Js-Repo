@@ -3,24 +3,32 @@ const validatorRegister = require("../userModule/validation/register");
 const crypto = require('crypto');
 const bcrypt = require("bcryptjs");
 async function getAllCoach(req,res,next){
- 
-  const userr = await user.find({role:"coach"}).populate('avis');
- 
-  userr.forEach(element => {
-    let somme = 0;
-    let t=0;
-   // if(element.avis.length===0){res.json(element)}
-    for (let i = 0; i < element.avis.length; i++) {
-      somme += element.avis[i].nbravis;
-      t=t+1;
-    }
-    element.statavis = somme / t;
-    element.save();
-  });
-  
-  userr.sort((a, b) => b.statavis - a.statavis);
-  
-  res.json(userr);
+  try {
+    let userr = await user.find({ role: "coach" }).populate("avis");
+
+    userr.forEach((element) => {
+      let somme = 0;
+      let t = 0;
+      for (let i = 0; i < element.avis.length; i++) {
+        somme += element.avis[i].nbravis;
+        t = t + 1;
+      }
+      if (element.statavis) {
+        element.statavis = somme / t;
+      } else {
+        element.statavis = 0;
+      }
+      element.save();
+    });
+
+    // trier le tableau d'utilisateurs
+    userr.sort((a, b) => b.statavis - a.statavis);
+
+    res.json(userr);
+    console.log(userr)
+  } catch (error) {
+    next(error);
+  }
     
 }
 async function addCoach(req,res,next){
@@ -91,7 +99,14 @@ userr.forEach((element) => {
     somme += element.avis[i].nbravis;
     t = t + 1;
   }
-  element.statavis = somme / t;
+  if(element.statavis){
+    element.statavis = somme / t;
+  }
+  else{
+
+    element.statavis = 0
+  }
+
   element.save();
 });
 
