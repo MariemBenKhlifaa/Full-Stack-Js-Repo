@@ -86,7 +86,6 @@ if(isValid==true){
         location:req.body.location,
         organizer:req.body.organizer,
         date:req.body.date,
-        img:req.body.img.substring(req.body.img.lastIndexOf("\\") + 1),
         nbLikes:req.body.nbLikes
     
     },{new:true},(obj)=>{console.log(obj)})

@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "build":"npm i"
+
   },
   "dependencies": {
     "bad-words": "^3.0.4",
