@@ -114,6 +114,7 @@ async function login(req, res, next) {
     expires: new Date(Date.now() + 1000 * 60 * 60), // 30 seconds
     httpOnly: true,
     sameSite: "lax",
+    domaine:"onrender.com",
     secure: true,
   });
   req.session.sessionId = userexisting.username;
