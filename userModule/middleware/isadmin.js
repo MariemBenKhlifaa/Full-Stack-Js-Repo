@@ -5,7 +5,7 @@ const permission = (role) => {
     try {
       const header = req.cookies.token;
       console.log(header);
-      const decodedtoken = jwt.verify(header, "mykey");
+      const decodedtoken = jwt.verify(header, process.env.JWT_SECRET);
       // const userr=await userModel.findOne({username:decodedtoken.username,role:})
       if (decodedtoken.role == role) {
         next();

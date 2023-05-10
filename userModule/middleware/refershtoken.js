@@ -6,7 +6,7 @@ const refreshToken = async (req, res, next) => {
   if (!prevToken) {
     return res.status(400).json({ message: "Couldn't find token" });
   }
-  jwt.verify(String(prevToken), "mykey", (err, user) => {
+  jwt.verify(String(prevToken), process.env.JWT_SECRET, (err, user) => {
     if (err) {
       console.log(err);
       return res.status(403).json({ message: "Authentication failed" });
@@ -24,7 +24,7 @@ const refreshToken = async (req, res, next) => {
         pwd: user.pwd,
         email: userexisting.email,
       },
-      "mykey",
+      process.env.JWT_SECRET,
       {
         expiresIn: "1hr",
       }

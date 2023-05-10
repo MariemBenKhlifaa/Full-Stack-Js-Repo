@@ -4,7 +4,6 @@ const userModel = require("../userModel");
 const sendMail = require("../../utils/sendEmail");
 const jwt_decode = require("jwt-decode");
 const bcrypt = require("bcryptjs");
-const jwt_secret_key = "mykey";
 const { OAuth2Client } = require("google-auth-library");
 const { CLIENT_URL } = process.env;
 const client = new OAuth2Client(process.env.CLIENT_ID);
@@ -13,7 +12,7 @@ var session;
 const authentifaction = async (req, res, next) => {
   try {
     const header = req.cookies.token;
-    const decodedtoken = jwt.verify(header, "mykey");
+    const decodedtoken = jwt.verify(header, process.env.JWT_SECRET);
     const userr = await userModel.findOne({ username: decodedtoken.username });
     if (!userr || !req.session.sessionId) throw new Error();
     next();
@@ -70,11 +69,7 @@ const forgotpassword = async (req, res, next) => {
       const token = sendToken({ id: user._id });
       console.log("aaa", token);
       const url = `${CLIENT_URL}/resetpassword/${token}`;
-      sendMail(
-        "elaa.boulifi@esprit.tn",
-        url,
-        "Click here to reset your password"
-      );
+      sendMail("elaa.boulifi@esprit.tn", url, "Click here to reset your password");
       res.status(200).json({
         url: url,
         success: true,
@@ -119,8 +114,7 @@ async function googlelogin(req, res, next) {
       audience: process.env.CLIENT_ID,
     });
 
-    const { email_verified, email, given_name, family_name, name } =
-      verify.payload;
+    const { email_verified, email, given_name, family_name, name } = verify.payload;
     const pwd = email + process.env.CLIENT_SECRET;
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(pwd, salt);
