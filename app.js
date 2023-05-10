@@ -37,7 +37,7 @@ app.use(
   })
 );
 
-app.use(cors({ credentials: true, origin: "https://youthcc.onrender.com/" }));
+app.use(cors({ credentials: true, origin: "https://youthcc.onrender.com" }));
 
 app.use(cookieParser());
 app.use(express.json());
