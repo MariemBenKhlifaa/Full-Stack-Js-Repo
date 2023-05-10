@@ -30,7 +30,7 @@ var app = express();
 const oneDay = 1000 * 60 * 60 * 24;
 app.use(
   sessions({
-    secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
+    secret: process.env.JWT_SECRET,
     saveUninitialized: true,
     cookie: { maxAge: oneDay, domain: ".onrender.com", path: "/" },
     resave: false,
