@@ -1,3 +1,4 @@
 {
-    "uri":"mongodb://localhost:27017/mern"
+    "uri":"mongodb+srv://mariembenkhlifa:Momo151617%40@youth.qcayeol.mongodb.net/test?retryWrites=true&w=majority"
+    
 }

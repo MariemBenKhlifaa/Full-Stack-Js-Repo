@@ -14,6 +14,6 @@ var Course = new Schema({
 
 Course.index({ title: "text" });
 const courseModel = mongoose.model("course", Course);
-courseModel.createIndexes();
+//courseModel.createIndexes();
 
 module.exports = courseModel;

@@ -25,7 +25,7 @@ var abonnementRouter = require("./LibraryModule/AbbController");
 var courseRouter = require("./CourseModule/CourseController");
 var lessonRouter = require("./CourseModule/LessonController");
 var fileUploadRouter = require("./routes/fileUploadRoute");
-
+const uri= process.env.URI
 var app = express();
 const oneDay = 1000 * 60 * 60 * 24;
 app.use(
@@ -44,7 +44,7 @@ app.use(express.json());
 var mongoose = require("mongoose");
 var mongoconfig = require("./config/mongoConfig.json");
 mongoose
-  .connect(mongoconfig.uri, {
+  .connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -54,6 +54,21 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+
+/*
+var mongoose = require("mongoose");
+var mongoconfig = require("./config/mongoConfig.json");
+mongoose
+  .connect(mongoconfig.uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("db connected");
+  })
+  .catch((err) => {
+    console.log(err);
+  });*/
 var server = http.createServer(app);
 server.listen(3000, () => {
   console.log("server strated");
