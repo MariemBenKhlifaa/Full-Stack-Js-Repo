@@ -13,10 +13,10 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./userModule/userController");
 var libraryRouter = require("./LibraryModule/LibraryController");
 var commentaireRouter = require("./LibraryModule/CommentaireController");
-var EventRouter = require('./EventsModule/EventController')
-var ReviewRouter = require('./EventsModule/ReviewController')
-var ParticipateRouter= require('./EventsModule/ParticipateController')
-var likeEventRouter= require('./EventsModule/likeEventController')
+var EventRouter = require("./EventsModule/EventController");
+var ReviewRouter = require("./EventsModule/ReviewController");
+var ParticipateRouter = require("./EventsModule/ParticipateController");
+var likeEventRouter = require("./EventsModule/likeEventController");
 
 var coachrouter = require("./CoachModule/coachcontroller");
 const cors = require("cors");
@@ -25,7 +25,7 @@ var abonnementRouter = require("./LibraryModule/AbbController");
 var courseRouter = require("./CourseModule/CourseController");
 var lessonRouter = require("./CourseModule/LessonController");
 var fileUploadRouter = require("./routes/fileUploadRoute");
-const uri= process.env.URI
+const uri = process.env.URI;
 var app = express();
 const oneDay = 1000 * 60 * 60 * 24;
 app.use(
@@ -37,7 +37,7 @@ app.use(
   })
 );
 
-app.use(cors({ credentials: true, origin: "https://youthconnect.netlify.app" }));
+app.use(cors({ credentials: true, origin: "*" }));
 
 app.use(cookieParser());
 app.use(express.json());
@@ -88,11 +88,10 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/library", libraryRouter);
 app.use("/commentaire", commentaireRouter);
-app.use('/events', EventRouter);
-app.use('/review', ReviewRouter);
-app.use('/participate', ParticipateRouter);
-app.use('/likeEvent', likeEventRouter);
-
+app.use("/events", EventRouter);
+app.use("/review", ReviewRouter);
+app.use("/participate", ParticipateRouter);
+app.use("/likeEvent", likeEventRouter);
 
 app.use("/abonnement", abonnementRouter);
 
