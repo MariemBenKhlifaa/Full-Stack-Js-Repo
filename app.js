@@ -37,7 +37,7 @@ app.use(
   })
 );
 
-app.use(cors({ credentials: true, origin: "http://localhost:3001" }));
+app.use(cors({ credentials: true, origin: "https://645bb8dbdfd9810d1a6b828c--youthconnect.netlify.app" }));
 
 app.use(cookieParser());
 app.use(express.json());
