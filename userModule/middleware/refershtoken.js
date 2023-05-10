@@ -32,7 +32,8 @@ const refreshToken = async (req, res, next) => {
     console.log("Regenerated Token\n", token);
 
     res.cookie("token", token, {
-      path: ".onrender.com",
+      domain: ".onrender.com",
+      path: "/",
       expires: new Date(Date.now() + 1000 * 60 * 60), // 30 min
       httpOnly: true,
       sameSite: "lax",

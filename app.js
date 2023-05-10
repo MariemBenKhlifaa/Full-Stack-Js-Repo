@@ -32,7 +32,7 @@ app.use(
   sessions({
     secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
     saveUninitialized: true,
-    cookie: { maxAge: oneDay },
+    cookie: { maxAge: oneDay, domain: ".onrender.com", path: "/" },
     resave: false,
   })
 );
