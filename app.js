@@ -37,7 +37,7 @@ app.use(
   })
 );
 
-app.use(cors({ credentials: true, origin: "https://youthconnect2.onrender.com" }));
+app.use(cors({ credentials: true, origin: "https://youthconnect3.onrender.com" }));
 
 app.use(cookieParser());
 app.use(express.json());
