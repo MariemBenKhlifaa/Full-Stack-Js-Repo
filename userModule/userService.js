@@ -113,7 +113,7 @@ async function login(req, res, next) {
     path: "/",
     expires: new Date(Date.now() + 1000 * 60 * 60), // 30 seconds
     httpOnly: true,
-    sameSite: true,
+    sameSite: "lax",
     domain: "onrender.com",
     secure: true,
   });
