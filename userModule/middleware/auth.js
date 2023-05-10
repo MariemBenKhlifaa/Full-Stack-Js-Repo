@@ -40,7 +40,8 @@ const getPassword = async (req, res) => {
     const token = sendToken(user);
 
     res.cookie("refreshtoken", token, {
-      path: "*.onrender.com",
+      httpOnly: true,
+      path: ".onrender.com",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7days
     });
     res.status(200).json({
@@ -140,7 +141,8 @@ async function googlelogin(req, res, next) {
       const token = sendToken({ _id: User._id });
 
       res.cookie("refreshtoken", token, {
-        path: "*.onrender.com",
+        httpOnly: true,
+        path: ".onrender.com",
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7days
       });
 
@@ -162,7 +164,8 @@ async function googlelogin(req, res, next) {
       const token = sendToken({ _id: newUser._id });
 
       res.cookie("refreshtoken", token, {
-        path: "*.onrender.com",
+        httpOnly: true,
+        path: ".onrender.com",
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7days
       });
 
