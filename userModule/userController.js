@@ -14,15 +14,15 @@ router.post("/googlelogin", googlelogin);
 
 router.post("/add/:role", service.add);
 router.get("/show/:name", authentifaction, permission("admin"), service.list, refreshToken);
-router.get("/delete/:id", authentifaction, permission("admin"), service.deleteuser, refreshToken);
+router.get("/delete/:id",service.deleteuser);
 router.post("/login", service.login);
-router.get("/listuser", authentifaction, permission("admin"), service.listuser, refreshToken);
-router.post("/updateuser/:id", authentifaction, service.update, refreshToken);
+router.get("/listuser", service.listuser);
+router.post("/updateuser/:id", service.update);
 router.get("/logout", service.logout);
 router.get("/userconnecte", authentifaction, service.getuserconnecte, refreshToken);
 router.get("/refresh", authentifaction, service.refresh, refreshToken);
-router.get("/blockuser/:id", authentifaction, permission("admin"), service.blockuser, refreshToken);
-router.post("/changerpwd/:username",authentifaction, service.changerpwd, refreshToken)
+router.get("/blockuser/:id", service.blockuser);
+router.post("/changerpwd/:username", service.changerpwd)
 router.get("/getcoachclient",service.getcoachclient)
 
 
